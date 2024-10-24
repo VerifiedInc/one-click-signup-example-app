@@ -1,16 +1,22 @@
 import { Head } from '@/components/layouts/head';
 import { MainLayout } from '@/components/layouts/main-layout';
 import { PageHeader } from '@/components/UI/PageHeader';
-import { Box } from '@mui/material';
+import OtpValidate from '@/features/otp/components/ValidateOtp';
+import { Box, Stack } from '@mui/material';
 
 function Register() {
   return (
     <>
       <Head page='Register' />
       <PageHeader title='Register' description='Register without 1-click' />
-      <Box>
-        <p>Register page</p>
-      </Box>
+      <Stack maxWidth={500}>
+        <OtpValidate
+          otpCode='1234'
+          onValidate={() => {
+            console.log('valid');
+          }}
+        />
+      </Stack>
     </>
   );
 }

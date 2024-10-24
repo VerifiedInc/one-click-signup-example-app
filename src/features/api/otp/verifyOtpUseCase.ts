@@ -1,15 +1,11 @@
 import { PrismaClient } from '@prisma/client';
-import * as verificationCodes from '../../../prisma/verificationCodes';
+import * as verificationCodes from '@/../prisma/verificationCodes';
 
-type Options = {
-  prisma: PrismaClient;
-  code: string;
-  phone: string;
-};
-
-export async function verifyOtpUseCase(options: Options) {
-  const { prisma, code, phone } = options;
-
+export async function verifyOtpUseCase(
+  prisma: PrismaClient,
+  code: string,
+  phone: string,
+) {
   console.log('Verifying OTP', { phone, code });
 
   const verificationCode = await verificationCodes.findByPhoneAndCode(prisma, {
