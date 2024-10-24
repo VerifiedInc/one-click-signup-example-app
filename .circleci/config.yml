@@ -1,0 +1,216 @@
+version: 2.1
+
+orbs:
+  unumid: unumid/unumid-app-orb@2.7.0
+
+workflows:
+  lint-and-test:
+    jobs:
+      - unumid/lint-and-test:
+          test_script_name: test
+          name: unumid/lint-and-test-branch
+          context:
+            - Github-Packages
+          cache_version: v6
+          node_version: 20.10.0
+          filters:
+            branches:
+              ignore:
+                - main
+
+  build-and-deploy:
+    jobs:
+      - unumid/lint-and-test:
+          node_version: 20.10.0
+          context:
+            - Github-Packages
+          enable_slack_failure_notification: true
+          filters:
+            branches:
+              only:
+                - main
+
+      - unumid/build-and-push-client-image:
+          requires:
+            - unumid/lint-and-test
+          context:
+            - AWS-Root-Account
+            - Github-Packages
+            - Slack-Context
+          account_id_1: '408067220840'
+          repo: repository-one-click-customer-starter-app
+          image_tag_1: '${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}'
+          image_tag_2: dev-latest
+          build_env_var_env: development
+
+          build_env_var_dashboard_url: https://dashboard-api.dev-verifiedinc.com
+          build_env_var_demo_url: https://1-click.demo.dev-verifiedinc.com/register
+          build_env_var_docs_url: https://docs.verified.inc
+
+          filters:
+            branches:
+              only:
+                - main
+
+      - unumid/deploy-image:
+          requires:
+            - unumid/build-and-push-client-image
+          context:
+            - AWS-Root-Account
+            - Slack-Context
+          account_id: '408067220840'
+          repo: repository-one-click-customer-starter-app
+          deployment: repository-one-click-customer-starter-app
+          cluster_name: dev-account-saas-cluster
+          image_tag: dev-latest
+          filters:
+            branches:
+              only:
+                - main
+
+  build-and-deploy-staging:
+    jobs:
+      - unumid/lint-and-test:
+          node_version: 20.10.0
+          context:
+            - Github-Packages
+            - Sentry-Context
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+.*$/
+            branches:
+              ignore: /.*/
+
+      - unumid/build-and-push-client-image:
+          name: unumid/build-and-push-client-image-staging
+          requires:
+            - unumid/lint-and-test
+          context:
+            - AWS-Root-Account
+            - Github-Packages
+            - Slack-Context
+            - Sentry-Context
+          account_id_1: 058264190665
+          publish_image_tag_1: false
+          repo: repository-one-click-customer-starter-app
+          image_tag_1: '${CIRCLE_TAG}'
+          image_tag_2: staging-latest
+          build_env_var_env: staging
+          build_env_var_sentry_dsn: https://45493fda177afb70414883f7c0bc7cc0@o4505632064208896.ingest.us.sentry.io/4506973540450304
+          build_env_var_dashboard_url: https://dashboard-api.staging-verifiedinc.com
+          build_env_var_demo_url: https://1-click.demo.staging-verifiedinc.com/register
+          build_env_var_docs_url: https://docs.verified.inc
+          build_env_var_sales_tools_url: https://sales-tools-service-api.staging-verifiedinc.com
+          build_env_var_support_call: https://calendly.com/verified-inc/book-a-call-from-dashboard
+          build_env_var_support_email: Support@Verified.inc
+          build_env_var_schema_resolver_url: https://schema-resolver.staging-verifiedinc.com
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+.*$/
+            branches:
+              ignore: /.*/
+
+      - unumid/deploy-image:
+          name: unumid/deploy-image-staging
+          requires:
+            - unumid/build-and-push-client-image-staging
+          context:
+            - AWS-Root-Account
+            - Slack-Context
+          account_id: 058264190665
+          repo: repository-one-click-customer-starter-app
+          deployment: repository-one-click-customer-starter-app
+          cluster_name: staging-account-core-cluster
+          image_tag: '${CIRCLE_TAG}'
+          slack_pass_notify_template: success_tagged_deploy_1
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+.*$/
+            branches:
+              ignore: /.*/
+
+  build-production:
+    jobs:
+      - unumid/lint-and-test:
+          node_version: 20.10.0
+          context:
+            - Github-Packages
+            - Sentry-Context
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+.*$/
+            branches:
+              ignore: /.*/
+
+      - unumid/build-and-push-client-image:
+          name: unumid/build-and-push-image-production
+          requires:
+            - unumid/lint-and-test
+          context:
+            - AWS-Root-Account
+            - Github-Packages
+            - Slack-Context
+            - Sentry-Context
+          account_id_1: '574388719779'
+          publish_image_tag_1: false
+          repo: repository-one-click-customer-starter-app
+          image_tag_1: '${CIRCLE_TAG}'
+          image_tag_2: '${CIRCLE_TAG}' # hack to satisfy the orb's requirement
+          build_env_var_env: production
+          build_env_var_sentry_dsn: https://45493fda177afb70414883f7c0bc7cc0@o4505632064208896.ingest.us.sentry.io/4506973540450304
+          build_env_var_dashboard_url: https://dashboard-api.verified.inc
+          build_env_var_demo_url: https://1-click.demo.verified.inc/register
+          build_env_var_docs_url: https://docs.verified.inc
+          build_env_var_sales_tools_url: https://sales-tools-service-api.verified.inc
+          build_env_var_support_call: https://calendly.com/verified-inc/book-a-call-from-dashboard
+          build_env_var_support_email: Support@Verified.inc
+          build_env_var_schema_resolver_url: https://schema-resolver.verified.inc
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+.*$/
+            branches:
+              ignore: /.*/
+
+  build-and-deploy-test:
+    jobs:
+      - unumid/build-and-push-client-image:
+          name: unumid/build-and-push-client-image-test
+          context:
+            - AWS-Root-Account
+            - Slack-Context
+            - Github-Packages
+            - Sentry-Context
+          account_id_1: '408067220840'
+          repo: repository-one-click-customer-starter-app
+          image_tag_1: '${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}'
+          image_tag_2: test-latest
+          build_env_var_env: development
+          build_env_var_sentry_dsn: https://45493fda177afb70414883f7c0bc7cc0@o4505632064208896.ingest.us.sentry.io/4506973540450304
+          build_env_var_dashboard_url: https://dashboard-api.dev-verifiedinc.com
+          build_env_var_demo_url: https://1-click.demo.dev-verifiedinc.com/register
+          build_env_var_docs_url: https://docs.verified.inc
+          build_env_var_sales_tools_url: https://sales-tools-service-api.dev-verifiedinc.com
+          build_env_var_support_call: https://calendly.com/verified-inc/book-a-call-from-dashboard
+          build_env_var_support_email: Support@Verified.inc
+          build_env_var_schema_resolver_url: https://schema-resolver.dev-verifiedinc.com
+          filters:
+            branches:
+              only:
+                - test-circleci
+
+      - unumid/deploy-image:
+          name: unumid/deploy-image-test
+          requires:
+            - unumid/build-and-push-client-image-test
+          context:
+            - AWS-Root-Account
+            - Slack-Context
+          account_id: '408067220840'
+          repo: repository-one-click-customer-starter-app
+          deployment: repository-one-click-customer-starter-app
+          cluster_name: dev-account-saas-cluster
+          image_tag: test-latest
+          filters:
+            branches:
+              only:
+                - test-circleci
