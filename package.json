@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    
     "compile": "npm run build",
     "dev": "NODE_ENV=development next dev -p 3061",
     "build": "next build",
@@ -34,14 +33,11 @@
     "lodash": "^4.17.21",
     "next": "14.2.14",
     "react": "^18",
-    "react-dnd": "^16.0.1",
-    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
     "ts-node": "^10.9.2",
     "zod": "^3.23.8"
   },
-
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^14.3.1",
