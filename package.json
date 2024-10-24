@@ -15,7 +15,10 @@
     "test": "npm run test:unit",
     "test:unit": "NODE_ENV=test npm run jest",
     "test:watch": "jest --watch",
-    "jest": "jest"
+    "jest": "jest",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:migrate:dev": "prisma migrate dev"
   },
   "engines": {
     "node": ">= 20.10.0"
@@ -36,7 +39,8 @@
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
     "ts-node": "^10.9.2",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "@prisma/client": "^5.20.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",
@@ -54,7 +58,8 @@
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "prisma": "^5.20.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
