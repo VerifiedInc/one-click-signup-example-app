@@ -9,4 +9,18 @@ export const styles = {
     px: '50px!important',
     mt: 8,
   },
+  toolbar: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    backdropFilter: 'blur(8px)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.12)',
+    borderBottomStyle: 'solid',
+    zIndex: 2,
+  },
 };
