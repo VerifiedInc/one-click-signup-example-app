@@ -8,12 +8,12 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   const prisma = new PrismaClient();
   try {
     await verifyOtpUseCase(prisma, req.body.otpCode, req.body.phone);
-  } catch (error) {
-    if (error instanceof Error) {
-      return res.status(400).json({ error: error.message });
-    }
+    return res.status(200).json({ message: 'OTP verified' });
+  } catch (error: any) {
     return res
       .status(400)
-      .json({ error: 'Failed to verify OTP code. Try again later' });
+      .json({
+        error: error.message || 'Failed to verify OTP code. Try again later',
+      });
   }
 }

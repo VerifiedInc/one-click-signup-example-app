@@ -10,18 +10,16 @@ type PageHeaderProps = {
 export function PageHeader(props: Readonly<PageHeaderProps>) {
   return (
     <Box sx={{ mt: 6.25 }}>
-      <Stack direction='row' alignItems='center' spacing={1}>
-        <Typography variant='h3' fontSize={50} fontWeight='800'>
-          {props.title}
-        </Typography>
-        {props.titleRightChildren}
-      </Stack>
+      <Typography variant='h3' fontSize={50} fontWeight='800'>
+        {props.title}
+      </Typography>
       {!!props.description && (
         <Typography
           variant='h4'
           fontSize={30}
           fontWeight='700'
           color='text.disabled'
+          textAlign='center'
         >
           {props.description}
         </Typography>

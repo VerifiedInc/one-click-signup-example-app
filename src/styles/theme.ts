@@ -36,3 +36,10 @@ export const lato = Lato({
 export const theme = sharedTheme({
   primaryFontFace: lato,
 });
+
+theme.palette.primary = {
+  main: '#D32D2D',
+  light: '#FF6B6B',
+  dark: '#9A0007',
+  contrastText: '#FFFFFF',
+};
