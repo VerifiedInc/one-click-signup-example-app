@@ -8,7 +8,7 @@ export async function sendSmsOTPUseCase(
   if (!shouldSendSms(phone)) {
     return;
   }
-  const message = `Enter this code to verify for 1-Click Starter App: ${code}`;
+  const message = `Enter this code to verify for Slooow: ${code}`;
   console.log(
     `sendSms: sending message to \`${phone}\` with message: ${message}`,
   );

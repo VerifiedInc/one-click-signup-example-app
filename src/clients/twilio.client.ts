@@ -1,3 +1,5 @@
+import { config } from '@/config.server';
+
 export default class TwilioClient implements SmsClient {
   private client: any;
 
@@ -21,7 +23,7 @@ export default class TwilioClient implements SmsClient {
   async sendSms(phone: string, message: string) {
     return this.client.messages
       .create({
-        from: '+13157125351',
+        from: config.TWILIO_PHONE_NUMBER,
         to: phone,
         body: message,
       })
