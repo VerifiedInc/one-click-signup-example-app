@@ -8,58 +8,42 @@ import {
 } from '@mui/material';
 import { Typography } from '@verifiedinc/shared-ui-elements/components';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { ReactNode, useState } from 'react';
 
-import { AnimatedButton } from '@/components/UI/AnimatedButton';
-
 import { IconPlayer } from '@/components/UI/IconPlayer';
-import { useEnv } from '@/contexts/EnvContext';
 import MenuItem from './MenuItem';
 import { styles } from './mainLayout.styles';
+import { useRouter } from 'next/router';
 
 function Menubar() {
-  const env = useEnv();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const router = useRouter();
   return (
     <Toolbar sx={styles.toolbar}>
-      <Stack direction='row' spacing={1} sx={{ alignItems: 'center' }}>
-        <Image
-          src='/horizontal-logo-alt.svg'
-          width={172}
-          height={42}
-          alt='Verified logo'
-        />
+      <Stack
+        direction='row'
+        spacing={1}
+        onClick={() => router.reload()}
+        sx={{
+          alignItems: 'center',
+          cursor: 'pointer',
+          '&:hover': {
+            cursor: 'pointer',
+          },
+        }}
+      >
+        <Image src='/slooow.png' width={42} height={42} alt='Slooow logo' />
         <Typography
           color='text.disabled'
           fontWeight={300}
           sx={{ fontSize: 36, lineHeight: 'normal' }}
         >
-          1-Click Starter App
+          Slooow
         </Typography>
       </Stack>
       <Stack direction='row' spacing={2}>
-        <AnimatedButton
-          text='DEMO'
-          data-testid='main-layout-redirect-demo-button'
-          href={env.demoUrl}
-          animationIcon='play'
-        />
-        <AnimatedButton
-          text='DOCS'
-          data-testid='main-layout-redirect-docs-button'
-          href={env.docsUrl}
-          animationIcon='code'
-        />
-        <AnimatedButton
-          text='DASHBOARD'
-          data-testid='main-layout-redirect-docs-button'
-          href={env.dashboardUrl}
-          animationIcon='store'
-        />
         <IconButton
           id='positioned-button'
           data-testid='main-layout-menu-button'
@@ -93,10 +77,16 @@ function Menubar() {
           }}
           disableScrollLock
         >
-          <MenuItem label='No Integration' path='/register' />
-          <MenuItem label='Non-Hosted' path='/register/1-click/non-hosted' />
-          <MenuItem label='Semi-Hosted' path='/register/1-click/semi-hosted' />
-          <MenuItem label='Hosted' path='/register/1-click/hosted' />
+          <MenuItem label='Without 1-click' path='/register' />
+          <MenuItem
+            label='1-click Non-Hosted'
+            path='/register/1-click/non-hosted'
+          />
+          <MenuItem
+            label='1-click Semi-Hosted'
+            path='/register/1-click/semi-hosted'
+          />
+          <MenuItem label='1-click Hosted' path='/register/1-click/hosted' />
         </Menu>
       </Stack>
     </Toolbar>
