@@ -6,7 +6,6 @@ import { Box, ThemeProvider } from '@mui/material';
 import { ClientOnly } from '@/components/layouts/clientOnly';
 
 import type { AppProps } from 'next/app';
-import { useState } from 'react';
 
 function AppBody({ Component, pageProps }: AppProps & { Component: any }) {
   const getLayout = Component.getLayout || ((page: any) => page);
