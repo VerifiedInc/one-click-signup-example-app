@@ -56,7 +56,6 @@
     "libphonenumber-js": "^1.11.11",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
-    "prisma": "^5.20.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-imask": "^7.6.1",
