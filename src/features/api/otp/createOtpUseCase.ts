@@ -1,18 +1,21 @@
-import { PrismaClient } from '@prisma/client';
-import * as verificationCodes from '@/../prisma/verificationCodes';
+import {
+  createOtp,
+  VerificationCode,
+} from '../../../../persistence/otpPersistenceClient';
 
 export function createOtpUseCase(
-  prisma: PrismaClient,
   code: string,
   phone: string,
-) {
+): VerificationCode {
   const expirationMinutes = 3;
   const expiresAt = new Date();
   expiresAt.setMinutes(expiresAt.getMinutes() + expirationMinutes);
 
-  return verificationCodes.create(prisma, {
+  // Otp database simulation
+  // For learning purposes, we are using a JSON file to store the OTPs
+  return createOtp({
     code,
     phone,
     expiresAt,
-  }) as Promise<verificationCodes.VerificationCodes>;
+  });
 }

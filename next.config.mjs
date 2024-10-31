@@ -3,10 +3,7 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   transpilePackages: ['@verifiedinc/shared-ui-elements'],
-  compiler: {
-    // Remove all console logs on production build
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
+
   async headers() {
     return [
       {

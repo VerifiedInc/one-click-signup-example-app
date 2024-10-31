@@ -5,9 +5,8 @@ import {
   OTPInput,
   OTPInputInstance,
 } from '@verifiedinc/shared-ui-elements/components';
-import { wrapPromise } from '@verifiedinc/shared-ui-elements/utils';
-import { ReactNode, useEffect, useRef, useState } from 'react';
-import { useValidateOtp } from '../hooks/useValidateOtp';
+import { ReactNode, useRef, useState } from 'react';
+import { requestValidateOtp } from '../otpClient';
 
 interface OtpComponentProps {
   phone: string;
@@ -23,34 +22,23 @@ function OtpComponent({
   isLoading,
 }: OtpComponentProps): ReactNode {
   const oneClickSignupSubmitInputRef = useRef<OTPInputInstance | null>(null);
+  const [isPending, setIsPending] = useState(false);
 
-  const { isPending, ...requestValidateOtp } = useValidateOtp();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isDisabled = isPending || isLoading;
 
   const handleValidateOtp = async (otpCode: string) => {
-    const [responseData] = await wrapPromise(
-      requestValidateOtp
-        .mutateAsync({
-          phone: phone,
-          otpCode,
-        })
-        .then((response) => response.json()),
-    );
+    setIsPending(true);
+    const response = await requestValidateOtp({ otpCode, phone });
 
-    if (responseData?.error) {
-      setErrorMessage(responseData.error);
+    if (response?.error) {
+      setErrorMessage(`${response.error}: ${otpCode}`);
+      oneClickSignupSubmitInputRef.current?.clear();
     } else {
       onValidate();
     }
+    setIsPending(false);
   };
-
-  useEffect(() => {
-    if (!errorMessage) {
-      return;
-    }
-    oneClickSignupSubmitInputRef.current?.clear();
-  }, [errorMessage]);
 
   return (
     <Box>

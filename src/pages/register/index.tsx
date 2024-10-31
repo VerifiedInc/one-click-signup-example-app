@@ -3,26 +3,24 @@ import { MainLayout } from '@/components/layouts/main-layout';
 
 import { PageHeader } from '@/components/UI/PageHeader';
 import OtpComponent from '@/features/otp/components/OtpComponent';
-import { useGenerateOtpAndSendSms } from '@/features/otp/hooks/useGenerateOtpAndSendSms';
+import { requestGenerateOtpAndSendSms } from '@/features/otp/otpClient';
 import FormWithoutIntegration from '@/features/register/components/FormWithoutIntegration';
 import PhoneComponent from '@/features/register/components/PhoneComponent';
 import SuccessfulSignUpComponent from '@/features/register/components/SuccessfulSignUpComponent';
 import { Alert, Container, Portal, Snackbar } from '@mui/material';
 import { Image, When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
-import { wrapPromise } from '@verifiedinc/shared-ui-elements/utils';
 import { useState } from 'react';
 
 function Register() {
   const [step, setStep] = useState(1);
   const [phone, setPhone] = useState('');
   const disclosure = useDisclosure();
+  const [isPending, setIsPending] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState({
     message: '',
     isError: true,
   });
-
-  const { isPending, ...generateOtpAndSendSms } = useGenerateOtpAndSendSms();
 
   const updateSnackbarMessage = (message: string, isError = false) => {
     setSnackbarMessage({ message, isError });
@@ -30,20 +28,16 @@ function Register() {
   };
 
   const handleGenerateOtpAndSendSms = async (phone: string) => {
-    const [responseData] = await wrapPromise(
-      generateOtpAndSendSms
-        .mutateAsync({
-          phone,
-        })
-        .then((response) => response.json()),
-    );
+    setIsPending(true);
+    const response = await requestGenerateOtpAndSendSms({ phone });
 
-    if (responseData?.error) {
-      updateSnackbarMessage(responseData.error, true);
+    if (response?.error) {
+      updateSnackbarMessage(response.error, true);
     } else {
       setPhone(phone);
       setStep(2);
     }
+    setIsPending(false);
   };
 
   const handleRetryResendOtp = (phone: string) => {
