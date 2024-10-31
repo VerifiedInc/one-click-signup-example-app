@@ -16,7 +16,6 @@ function Register() {
   const [step, setStep] = useState(1);
   const [phone, setPhone] = useState('');
   const disclosure = useDisclosure();
-  const [isPending, setIsPending] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState({
     message: '',
     isError: true,
@@ -28,7 +27,6 @@ function Register() {
   };
 
   const handleGenerateOtpAndSendSms = async (phone: string) => {
-    setIsPending(true);
     const response = await requestGenerateOtpAndSendSms({ phone });
 
     if (response?.error) {
@@ -37,7 +35,6 @@ function Register() {
       setPhone(phone);
       setStep(2);
     }
-    setIsPending(false);
   };
 
   const handleRetryResendOtp = (phone: string) => {
