@@ -5,8 +5,8 @@ import { PageHeader } from '@/components/UI/PageHeader';
 
 import { requestGenerateOtpAndSendSms } from '@/services/client/otp-request-service';
 
-import FormWithoutIntegrationStep from '@/components/register/FormWithoutIntegrationStep';
-import { FormWithoutIntegration } from '@/components/register/FormWithoutIntegrationStep/form.schema';
+import SimpleSignupFormStep from '@/components/register/SimpleSignupFormStep';
+import { SimpleSignupForm } from '@/components/register/SimpleSignupFormStep/simple-signup.schema';
 import OtpStep from '@/components/register/OtpStep';
 import PhoneStep from '@/components/register/PhoneStep';
 import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
@@ -45,7 +45,7 @@ function Register() {
     updateSnackbarMessage('Sms sent successfully');
   };
 
-  const handleFormSubmit = (data: FormWithoutIntegration) => {
+  const handleFormSubmit = (data: SimpleSignupForm) => {
     console.log(data);
     setStep(4);
   };
@@ -64,13 +64,6 @@ function Register() {
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>
         <When value={step === 1}>
-          <Image
-            src={'/slooow.png'}
-            alt={'logo'}
-            maxWidth='200px'
-            component='img'
-            sx={{ pb: 3 }}
-          />
           <PhoneStep onValidPhone={handleGenerateOtpAndSendSms} />
         </When>
 
@@ -82,7 +75,7 @@ function Register() {
           />
         </When>
         <When value={step === 3}>
-          <FormWithoutIntegrationStep onSubmit={handleFormSubmit} />
+          <SimpleSignupFormStep onSubmit={handleFormSubmit} />
         </When>
         <When value={step === 4}>
           <SuccessfulSignUpStep onSignOut={reset} />

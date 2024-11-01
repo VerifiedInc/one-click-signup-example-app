@@ -9,32 +9,32 @@ import { ReactNode } from 'react';
 
 import { Controller, useForm } from 'react-hook-form';
 import {
-  formWithoutIntegrationSchema,
-  type FormWithoutIntegration,
-} from './form.schema';
+  signupFormSchema,
+  type SimpleSignupForm,
+} from './simple-signup.schema';
 
-interface FormWithoutIntegrationStepProps {
-  onSubmit: (data: FormWithoutIntegration) => void;
+interface SimpleSignupFormStepProps {
+  onSubmit: (data: SimpleSignupForm) => void;
 }
 
-export default function FormWithoutIntegrationStep({
+export default function SimpleSignupFormStep({
   onSubmit,
-}: FormWithoutIntegrationStepProps): ReactNode {
+}: SimpleSignupFormStepProps): ReactNode {
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors, ...restOfState },
-  } = useForm<FormWithoutIntegration>({
-    resolver: zodResolver(formWithoutIntegrationSchema),
+    formState: { errors },
+  } = useForm<SimpleSignupForm>({
+    resolver: zodResolver(signupFormSchema),
   });
 
-  const getCommonFormProps = (fieldName: keyof FormWithoutIntegration) => {
+  const getCommonFormProps = (fieldName: keyof SimpleSignupForm) => {
     return {
       ...register(fieldName),
       error: !!errors[fieldName],
       helperText: errors[fieldName]?.message?.toString(),
-      size: 'small' as 'small', // weird type issue
+      size: 'small' as 'small',
     };
   };
 
