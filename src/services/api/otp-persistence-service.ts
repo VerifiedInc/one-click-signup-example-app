@@ -43,7 +43,7 @@ const writeData = (data: VerificationCode[]): void => {
   }
 };
 
-export const createOtp = (
+export const persistOtp = (
   payload: Omit<VerificationCode, 'uuid'>,
 ): VerificationCode => {
   try {

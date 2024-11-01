@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { Button, Stack, Typography, useTheme } from '@mui/material';
 import { VerifiedImage } from '@verifiedinc/shared-ui-elements/components';
 
 interface SuccessfulSignUpComponentProps {

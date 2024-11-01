@@ -2,15 +2,17 @@ import { Head } from '@/components/layouts/head';
 import { MainLayout } from '@/components/layouts/main-layout';
 
 import { PageHeader } from '@/components/UI/PageHeader';
-import OtpComponent from '@/features/otp/components/OtpComponent';
-import { requestGenerateOtpAndSendSms } from '@/features/otp/otpClient';
-import FormWithoutIntegration from '@/features/register/components/FormWithoutIntegration';
-import PhoneComponent from '@/features/register/components/PhoneComponent';
-import SuccessfulSignUpComponent from '@/features/register/components/SuccessfulSignUpComponent';
+
+import { requestGenerateOtpAndSendSms } from '@/services/client/otp-request-service';
+
+import SuccessfulSignUpComponent from '@/components/register/SuccessfulSignUpComponent';
 import { Alert, Container, Portal, Snackbar } from '@mui/material';
 import { Image, When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
 import { useState } from 'react';
+import OtpComponent from '@/components/otp/OtpComponent';
+import FormWithoutIntegration from '@/components/register/FormWithoutIntegration';
+import PhoneComponent from '@/components/register/PhoneComponent';
 
 function Register() {
   const [step, setStep] = useState(1);

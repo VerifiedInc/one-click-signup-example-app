@@ -8,11 +8,13 @@ import { ReactNode } from 'react';
 interface PhoneComponentProps {
   onValidPhone: (phone: string) => void;
   disabled?: boolean;
+  children?: ReactNode;
 }
 
 function PhoneComponent({
   onValidPhone,
   disabled,
+  children,
 }: PhoneComponentProps): ReactNode {
   return (
     <Box>
@@ -20,6 +22,7 @@ function PhoneComponent({
         Enter your phone number
       </Typography>
       <PhoneInput onValidPhone={onValidPhone} InputProps={{ disabled }} />
+      {children}
     </Box>
   );
 }

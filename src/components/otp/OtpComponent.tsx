@@ -1,4 +1,4 @@
-import { ResendPhoneBanner } from '@/features/register/components/ResendPhoneBanner';
+import { requestValidateOtp } from '@/services/client/otp-request-service';
 import { Box } from '@mui/material';
 import {
   FullWidthAlert,
@@ -6,7 +6,7 @@ import {
   OTPInputInstance,
 } from '@verifiedinc/shared-ui-elements/components';
 import { ReactNode, useRef, useState } from 'react';
-import { requestValidateOtp } from '../otpClient';
+import { ResendPhoneBanner } from '../register/ResendPhoneBanner';
 
 interface OtpComponentProps {
   phone: string;
@@ -56,6 +56,7 @@ function OtpComponent({
         phone={phone}
         disabled={isDisabled}
         onClick={() => {
+          oneClickSignupSubmitInputRef.current?.clear();
           onRetryResendOtp(phone);
         }}
       />
