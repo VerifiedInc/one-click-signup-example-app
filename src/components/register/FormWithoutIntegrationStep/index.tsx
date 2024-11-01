@@ -13,13 +13,13 @@ import {
   type FormWithoutIntegration,
 } from './form.schema';
 
-interface FormWithoutIntegrationProps {
+interface FormWithoutIntegrationStepProps {
   onSubmit: (data: FormWithoutIntegration) => void;
 }
 
-function FormWithoutIntegration({
+export default function FormWithoutIntegrationStep({
   onSubmit,
-}: FormWithoutIntegrationProps): ReactNode {
+}: FormWithoutIntegrationStepProps): ReactNode {
   const {
     register,
     handleSubmit,
@@ -91,5 +91,3 @@ function FormWithoutIntegration({
     </Box>
   );
 }
-
-export default FormWithoutIntegration;

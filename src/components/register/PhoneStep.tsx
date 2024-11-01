@@ -5,17 +5,17 @@ import {
 } from '@verifiedinc/shared-ui-elements/components';
 import { ReactNode } from 'react';
 
-interface PhoneComponentProps {
+interface PhoneStepProps {
   onValidPhone: (phone: string) => void;
   disabled?: boolean;
   children?: ReactNode;
 }
 
-function PhoneComponent({
+export default function PhoneStep({
   onValidPhone,
   disabled,
   children,
-}: PhoneComponentProps): ReactNode {
+}: PhoneStepProps): ReactNode {
   return (
     <Box>
       <Typography variant='h6' gutterBottom>
@@ -26,5 +26,3 @@ function PhoneComponent({
     </Box>
   );
 }
-
-export default PhoneComponent;

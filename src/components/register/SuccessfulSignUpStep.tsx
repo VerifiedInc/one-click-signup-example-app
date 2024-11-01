@@ -1,13 +1,13 @@
 import { Button, Stack, Typography, useTheme } from '@mui/material';
 import { VerifiedImage } from '@verifiedinc/shared-ui-elements/components';
 
-interface SuccessfulSignUpComponentProps {
+interface SuccessfulSignUpStepProps {
   onSignOut: () => void;
 }
 
-export default function SuccessfulSignUpComponent({
+export default function SuccessfulSignUpStep({
   onSignOut,
-}: SuccessfulSignUpComponentProps) {
+}: SuccessfulSignUpStepProps) {
   const theme = useTheme();
   return (
     <Stack spacing={3} sx={{ alignItems: 'center' }}>

@@ -5,6 +5,12 @@ import { PageHeader } from '@/components/UI/PageHeader';
 
 import { requestGenerateOtpAndSendSms } from '@/services/client/otp-request-service';
 
+import FormWithoutIntegrationStep from '@/components/register/FormWithoutIntegrationStep';
+import { FormWithoutIntegration } from '@/components/register/FormWithoutIntegrationStep/form.schema';
+import OtpStep from '@/components/register/OtpStep';
+import PhoneStep from '@/components/register/PhoneStep';
+import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
+import { postOneClick } from '@/services/client/one-click-request-service';
 import { Alert, Container, Link, Portal, Snackbar } from '@mui/material';
 import {
   Image,
@@ -13,11 +19,6 @@ import {
 } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
 import { useState } from 'react';
-import { postOneClick } from '@/services/client/one-click-request-service';
-import OtpComponent from '@/components/otp/OtpComponent';
-import FormWithoutIntegration from '@/components/register/FormWithoutIntegration';
-import PhoneComponent from '@/components/register/PhoneComponent';
-import SuccessfulSignUpComponent from '@/components/register/SuccessfulSignUpComponent';
 
 function OneClickNonHosted() {
   const [step, setStep] = useState(1);
@@ -85,7 +86,7 @@ function OneClickNonHosted() {
             component='img'
             sx={{ pb: 3 }}
           />
-          <PhoneComponent onValidPhone={handleGenerateOtpAndSendSms}>
+          <PhoneStep onValidPhone={handleGenerateOtpAndSendSms}>
             <Image
               src={'/verified-gray.svg'}
               alt={'1-click sign up powered by verified'}
@@ -104,21 +105,21 @@ function OneClickNonHosted() {
                 Terms of Use.
               </Link>
             </Typography>
-          </PhoneComponent>
+          </PhoneStep>
         </When>
 
         <When value={!!phone && step === 2}>
-          <OtpComponent
+          <OtpStep
             phone={phone}
             onRetryResendOtp={handleRetryResendOtp}
             onValidate={handleValidateOtp}
           />
         </When>
         <When value={step === 3}>
-          <FormWithoutIntegration onSubmit={handleFormSubmit} />
+          <FormWithoutIntegrationStep onSubmit={handleFormSubmit} />
         </When>
         <When value={step === 4}>
-          <SuccessfulSignUpComponent onSignOut={reset} />
+          <SuccessfulSignUpStep onSignOut={reset} />
         </When>
       </Container>
       <Portal>

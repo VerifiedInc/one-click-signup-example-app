@@ -5,14 +5,15 @@ import { PageHeader } from '@/components/UI/PageHeader';
 
 import { requestGenerateOtpAndSendSms } from '@/services/client/otp-request-service';
 
-import SuccessfulSignUpComponent from '@/components/register/SuccessfulSignUpComponent';
+import FormWithoutIntegrationStep from '@/components/register/FormWithoutIntegrationStep';
+import { FormWithoutIntegration } from '@/components/register/FormWithoutIntegrationStep/form.schema';
+import OtpStep from '@/components/register/OtpStep';
+import PhoneStep from '@/components/register/PhoneStep';
+import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
 import { Alert, Container, Portal, Snackbar } from '@mui/material';
 import { Image, When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
 import { useState } from 'react';
-import OtpComponent from '@/components/otp/OtpComponent';
-import FormWithoutIntegration from '@/components/register/FormWithoutIntegration';
-import PhoneComponent from '@/components/register/PhoneComponent';
 
 function Register() {
   const [step, setStep] = useState(1);
@@ -70,21 +71,21 @@ function Register() {
             component='img'
             sx={{ pb: 3 }}
           />
-          <PhoneComponent onValidPhone={handleGenerateOtpAndSendSms} />
+          <PhoneStep onValidPhone={handleGenerateOtpAndSendSms} />
         </When>
 
         <When value={!!phone && step === 2}>
-          <OtpComponent
+          <OtpStep
             phone={phone}
             onRetryResendOtp={handleRetryResendOtp}
             onValidate={() => setStep(3)}
           />
         </When>
         <When value={step === 3}>
-          <FormWithoutIntegration onSubmit={handleFormSubmit} />
+          <FormWithoutIntegrationStep onSubmit={handleFormSubmit} />
         </When>
         <When value={step === 4}>
-          <SuccessfulSignUpComponent onSignOut={reset} />
+          <SuccessfulSignUpStep onSignOut={reset} />
         </When>
       </Container>
       <Portal>

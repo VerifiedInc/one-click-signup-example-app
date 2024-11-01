@@ -6,21 +6,21 @@ import {
   OTPInputInstance,
 } from '@verifiedinc/shared-ui-elements/components';
 import { ReactNode, useRef, useState } from 'react';
-import { ResendPhoneBanner } from '../register/ResendPhoneBanner';
+import { ResendPhoneBanner } from './ResendPhoneBanner';
 
-interface OtpComponentProps {
+interface OtpStepProps {
   phone: string;
   onValidate: () => void;
   onRetryResendOtp: (phone: string) => void;
   isLoading?: boolean;
 }
 
-function OtpComponent({
+export default function OtpStep({
   phone,
   onValidate,
   onRetryResendOtp,
   isLoading,
-}: OtpComponentProps): ReactNode {
+}: OtpStepProps): ReactNode {
   const oneClickSignupSubmitInputRef = useRef<OTPInputInstance | null>(null);
   const [isPending, setIsPending] = useState(false);
 
@@ -72,5 +72,3 @@ function OtpComponent({
     </Box>
   );
 }
-
-export default OtpComponent;

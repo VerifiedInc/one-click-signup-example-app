@@ -19,6 +19,7 @@ export const formWithoutIntegrationSchema = z.object({
   zip: fieldSchema,
   country: fieldSchema,
 });
+
 export type FormWithoutIntegration = z.infer<
   typeof formWithoutIntegrationSchema
 >;
