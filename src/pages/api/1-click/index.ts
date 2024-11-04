@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log('checkou aqui');
   if (req.method === 'POST') {
     return postOneClick(req, res);
   } else if (req.method === 'PATCH') {
@@ -63,8 +62,6 @@ async function patchOneClick(req: NextApiRequest, res: NextApiResponse) {
 async function getOneClick(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { uuid, userInput } = req.query;
-    console.log('uuid', uuid);
-    console.log('userInput', userInput);
 
     const apiKey = process.env.ONE_CLICK_API_KEY;
     const apiURL = process.env.ONE_CLICK_API_URL;

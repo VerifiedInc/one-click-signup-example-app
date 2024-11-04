@@ -55,7 +55,6 @@ function Register() {
   const handleValidateOtp = async (otpCode: string) => {
     setIsLoading(true);
     const otpResponse = await requestValidateOtp({ otpCode, phone });
-    console.log(otpResponse, { otpCode, phone });
     if (otpResponse?.error) {
       updateSnackbarMessage(`${otpResponse.error}: ${otpCode}`, true);
     } else {
