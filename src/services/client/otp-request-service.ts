@@ -11,7 +11,7 @@ export const requestValidateOtp = async (payload: {
   otpCode: string;
   phone: string;
 }): Promise<{ error?: string; message?: string }> => {
-  return fetch('/api/otp/verify-otp', {
+  return fetch('/api/verify-otp', {
     method: 'POST',
     body: JSON.stringify(payload),
     headers,

@@ -34,7 +34,6 @@ export const readData = (): VerificationCode[] => {
 const writeData = (data: VerificationCode[]): void => {
   try {
     const jsonData = JSON.stringify(data, null, 2);
-    console.log(jsonData);
     writeFileSync(filePath, jsonData, 'utf-8');
     console.log('Data successfully saved.');
   } catch (error) {
@@ -43,7 +42,7 @@ const writeData = (data: VerificationCode[]): void => {
   }
 };
 
-export const createOtp = (
+export const persistOtp = (
   payload: Omit<VerificationCode, 'uuid'>,
 ): VerificationCode => {
   try {

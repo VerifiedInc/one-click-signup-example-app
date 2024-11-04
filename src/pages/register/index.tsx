@@ -2,21 +2,31 @@ import { Head } from '@/components/layouts/head';
 import { MainLayout } from '@/components/layouts/main-layout';
 
 import { PageHeader } from '@/components/UI/PageHeader';
-import OtpComponent from '@/features/otp/components/OtpComponent';
-import { requestGenerateOtpAndSendSms } from '@/features/otp/otpClient';
-import FormWithoutIntegration from '@/features/register/components/FormWithoutIntegration';
-import PhoneComponent from '@/features/register/components/PhoneComponent';
-import SuccessfulSignUpComponent from '@/features/register/components/SuccessfulSignUpComponent';
+
+import { requestGenerateOtpAndSendSms } from '@/services/client/otp-request-service';
+
+import SimpleSignupFormStep from '@/components/register/SimpleSignupFormStep';
+import { SimpleSignupForm } from '@/components/register/SimpleSignupFormStep/simple-signup.schema';
+import OtpStep from '@/components/register/OtpStep';
+import PhoneStep from '@/components/register/PhoneStep';
+import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
 import { Alert, Container, Portal, Snackbar } from '@mui/material';
 import { Image, When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
+enum Steps {
+  PHONE = 1,
+  OTP = 2,
+  FORM = 3,
+  SUCCESS = 4,
+}
 function Register() {
-  const [step, setStep] = useState(1);
+  const router = useRouter();
+  const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
   const disclosure = useDisclosure();
-  const [isPending, setIsPending] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState({
     message: '',
     isError: true,
@@ -28,16 +38,14 @@ function Register() {
   };
 
   const handleGenerateOtpAndSendSms = async (phone: string) => {
-    setIsPending(true);
     const response = await requestGenerateOtpAndSendSms({ phone });
 
     if (response?.error) {
       updateSnackbarMessage(response.error, true);
     } else {
       setPhone(phone);
-      setStep(2);
+      setStep(Steps.OTP);
     }
-    setIsPending(false);
   };
 
   const handleRetryResendOtp = (phone: string) => {
@@ -45,14 +53,13 @@ function Register() {
     updateSnackbarMessage('Sms sent successfully');
   };
 
-  const handleFormSubmit = (data: FormWithoutIntegration) => {
+  const handleFormSubmit = (data: SimpleSignupForm) => {
     console.log(data);
-    setStep(4);
+    setStep(Steps.SUCCESS);
   };
 
   const reset = () => {
-    setStep(1);
-    setPhone('');
+    router.reload();
   };
 
   return (
@@ -63,29 +70,22 @@ function Register() {
         description='This might be Slooow'
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>
-        <When value={step === 1}>
-          <Image
-            src={'/slooow.png'}
-            alt={'logo'}
-            maxWidth='200px'
-            component='img'
-            sx={{ pb: 3 }}
-          />
-          <PhoneComponent onValidPhone={handleGenerateOtpAndSendSms} />
+        <When value={step === Steps.PHONE}>
+          <PhoneStep onValidPhone={handleGenerateOtpAndSendSms} />
         </When>
 
-        <When value={!!phone && step === 2}>
-          <OtpComponent
+        <When value={!!phone && step === Steps.OTP}>
+          <OtpStep
             phone={phone}
             onRetryResendOtp={handleRetryResendOtp}
             onValidate={() => setStep(3)}
           />
         </When>
-        <When value={step === 3}>
-          <FormWithoutIntegration onSubmit={handleFormSubmit} />
+        <When value={step === Steps.FORM}>
+          <SimpleSignupFormStep onSubmit={handleFormSubmit} />
         </When>
-        <When value={step === 4}>
-          <SuccessfulSignUpComponent onSignOut={reset} />
+        <When value={step === Steps.SUCCESS}>
+          <SuccessfulSignUpStep onSignOut={reset} />
         </When>
       </Container>
       <Portal>

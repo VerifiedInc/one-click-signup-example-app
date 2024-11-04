@@ -1,9 +1,9 @@
-import { generateOtpAndSendSmsUseCase } from '@/features/api/genateOtpAndSendSmsUseCase';
+import { generateOtpAndSendSms } from '@/services/api/otp-sms-service';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
-    const otp = generateOtpAndSendSmsUseCase(req.body.phone);
+    const otp = generateOtpAndSendSms(req.body.phone);
     return res.status(200).json({ otp });
   } catch (error: any) {
     console.log(error);

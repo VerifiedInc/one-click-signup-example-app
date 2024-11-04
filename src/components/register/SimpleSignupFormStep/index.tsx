@@ -1,40 +1,38 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Stack, TextField } from '@mui/material';
-import {
-  Button,
-  DateInput,
-  SSNInput,
-} from '@verifiedinc/shared-ui-elements/components';
+import { Button, SSNInput } from '@verifiedinc/shared-ui-elements/components';
 import { ReactNode } from 'react';
 
+import { DatePicker } from '@mui/x-date-pickers';
 import { Controller, useForm } from 'react-hook-form';
 import {
-  formWithoutIntegrationSchema,
-  type FormWithoutIntegration,
-} from './form.schema';
+  signupFormSchema,
+  type SimpleSignupForm,
+} from './simple-signup.schema';
 
-interface FormWithoutIntegrationProps {
-  onSubmit: (data: FormWithoutIntegration) => void;
+interface SimpleSignupFormStepProps {
+  onSubmit: (data: SimpleSignupForm) => void;
 }
 
-function FormWithoutIntegration({
+export default function SimpleSignupFormStep({
   onSubmit,
-}: FormWithoutIntegrationProps): ReactNode {
+}: SimpleSignupFormStepProps): ReactNode {
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors, ...restOfState },
-  } = useForm<FormWithoutIntegration>({
-    resolver: zodResolver(formWithoutIntegrationSchema),
+    formState: { errors },
+    setValue,
+  } = useForm<SimpleSignupForm>({
+    resolver: zodResolver(signupFormSchema),
   });
 
-  const getCommonFormProps = (fieldName: keyof FormWithoutIntegration) => {
+  const getCommonFormProps = (fieldName: keyof SimpleSignupForm) => {
     return {
       ...register(fieldName),
       error: !!errors[fieldName],
       helperText: errors[fieldName]?.message?.toString(),
-      size: 'small' as 'small', // weird type issue
+      size: 'small' as 'small',
     };
   };
 
@@ -42,21 +40,19 @@ function FormWithoutIntegration({
     <Box component='form' onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={1}>
         <TextField label='First Name' {...getCommonFormProps('firstName')} />
-        <TextField label='Middle Name' {...getCommonFormProps('middleName')} />
         <TextField label='Last Name' {...getCommonFormProps('lastName')} />
-        <Controller
-          control={control}
-          name='dob'
-          render={({ field: { onChange, onBlur, value } }) => (
-            <DateInput
-              onChange={onChange} // send value to hook form
-              onBlur={onBlur} // notify when input is touched/blur
-              value={value}
-              allowFutureDates={false}
-              error={!!errors.dob}
-              helperText={errors.dob?.message?.toString()}
-            />
-          )}
+        <DatePicker
+          label='Select Date of Birth'
+          slotProps={{
+            textField: {
+              error: !!errors.dob,
+              helperText: errors.dob?.message?.toString(),
+              size: 'small',
+            },
+          }}
+          onChange={(date) => {
+            if (date) setValue('dob', date.toDate());
+          }}
         />
 
         <Controller
@@ -64,7 +60,7 @@ function FormWithoutIntegration({
           name='ssn'
           render={({ field: { onChange, value } }) => (
             <SSNInput
-              onChange={onChange} // send value to hook form
+              onChange={onChange}
               value={value}
               error={!!errors.ssn}
               helperText={errors.ssn?.message?.toString()}
@@ -76,10 +72,7 @@ function FormWithoutIntegration({
           label='Address Line 1'
           {...getCommonFormProps('addressLine1')}
         />
-        <TextField
-          label='Address Line 2'
-          {...getCommonFormProps('addressLine2')}
-        />
+
         <TextField label='City' {...getCommonFormProps('city')} />
         <TextField label='State' {...getCommonFormProps('state')} />
         <TextField label='ZIP Code' {...getCommonFormProps('zip')} />
@@ -91,5 +84,3 @@ function FormWithoutIntegration({
     </Box>
   );
 }
-
-export default FormWithoutIntegration;
