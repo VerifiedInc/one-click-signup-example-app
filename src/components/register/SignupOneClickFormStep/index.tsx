@@ -97,6 +97,15 @@ export default function SignupOneClickFormStep({
     };
   };
 
+  const renderAddressSelectErrorMessage = () => {
+    if (errors.addressLine1 && selectedAddressIndex === null) {
+      return {
+        helperText: `Please select an address or add a new one`,
+        error: true,
+      };
+    }
+  };
+
   return (
     <Box component='form' onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={1}>
@@ -111,10 +120,10 @@ export default function SignupOneClickFormStep({
           {...getCommonFormProps('lastName')}
           defaultValue={credentials?.fullName?.lastName}
         />
-
         <SelectInput
           InputProps={{
             label: 'Select the address',
+            ...renderAddressSelectErrorMessage(),
           }}
           options={buildAddressOptions}
           onChange={handleSelectAddressOption}
