@@ -27,3 +27,15 @@ export const requestGenerateOtpAndSendSms = async (payload: {
     headers,
   }).then((response) => response.json());
 };
+
+export const requestSendSms = async (payload: {
+  phone: string;
+  otp: string;
+}): Promise<{ error?: string }> => {
+  console.log(payload);
+  return fetch('/api/send-sms', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers,
+  }).then((response) => response.json());
+};

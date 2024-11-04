@@ -1,18 +1,17 @@
-import { requestValidateOtp } from '@/services/client/otp-request-service';
 import { Box } from '@mui/material';
 import {
-  FullWidthAlert,
   OTPInput,
   OTPInputInstance,
 } from '@verifiedinc/shared-ui-elements/components';
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ResendPhoneBanner } from './ResendPhoneBanner';
 
 interface OtpStepProps {
   phone: string;
-  onValidate: () => void;
+  onValidate: (otp: string) => void;
   onRetryResendOtp: (phone: string) => void;
   isLoading?: boolean;
+  shouldVerifyOtpIsValid?: boolean;
 }
 
 export default function OtpStep({
@@ -22,30 +21,29 @@ export default function OtpStep({
   isLoading,
 }: OtpStepProps): ReactNode {
   const oneClickSignupSubmitInputRef = useRef<OTPInputInstance | null>(null);
-  const [isPending, setIsPending] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const isDisabled = isPending || isLoading;
+  const [refresh, setRefresh] = useState(false); // State to trigger re-render of otp input
+
+  const handleClear = () => {
+    setRefresh((prev) => !prev); // Toggle state to trigger re-render
+  };
 
   const handleValidateOtp = async (otpCode: string) => {
-    setIsPending(true);
-    const response = await requestValidateOtp({ otpCode, phone });
-
-    if (response?.error) {
-      setErrorMessage(`${response.error}: ${otpCode}`);
-      oneClickSignupSubmitInputRef.current?.clear();
-    } else {
-      onValidate();
-    }
-    setIsPending(false);
+    onValidate(otpCode);
+    handleClear();
   };
+
+  useEffect(() => {
+    oneClickSignupSubmitInputRef.current?.clear(); // Clear the input
+  }, [refresh]);
 
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
         <OTPInput
           ref={oneClickSignupSubmitInputRef}
-          disabled={isDisabled}
+          disabled={isLoading}
           onChange={(event: any) => {
             handleValidateOtp(event.target.value);
           }}
@@ -54,21 +52,12 @@ export default function OtpStep({
 
       <ResendPhoneBanner
         phone={phone}
-        disabled={isDisabled}
+        disabled={isLoading}
         onClick={() => {
           oneClickSignupSubmitInputRef.current?.clear();
           onRetryResendOtp(phone);
         }}
       />
-      {errorMessage && (
-        <FullWidthAlert
-          title='Error Authenticating'
-          severity='error'
-          sx={{ mt: 1 }}
-        >
-          {errorMessage}
-        </FullWidthAlert>
-      )}
     </Box>
   );
 }

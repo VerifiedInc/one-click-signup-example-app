@@ -16,15 +16,19 @@ export type OneClickCredentials = {
   ssn?: string;
 };
 
-type SuccessOneClickResponse = {
-  identity?: {
-    identifiers: {
-      phone: string;
-    };
-    credentials: OneClickCredentials;
-    birthDate: string;
-    ssn: string;
+type OneClickEntity = {
+  identifiers: {
+    phone: string;
   };
+  credentials: OneClickCredentials;
+  birthDate: string;
+  ssn: string;
+};
+
+type SuccessOneClickResponse = {
+  identity?: OneClickEntity;
+  uuid: string;
+  code?: string;
 };
 
 type ErrorOneClick = {
@@ -37,12 +41,19 @@ type ErrorOneClick = {
   };
 };
 
-export type OneClickResponse = SuccessOneClickResponse | ErrorOneClick;
+export type OneClickPostResponse = SuccessOneClickResponse | ErrorOneClick;
 
-export type OneClickRequest = {
+export type OneClickGetResponse = OneClickEntity | ErrorOneClick;
+export type OneClickPatchResponse = OneClickEntity | ErrorOneClick;
+
+export type OneClickPostRequest = {
   phone: string;
   email?: string;
   birthDate?: string;
+};
+
+export type OneClickPatchRequest = {
+  birthDate: string;
 };
 
 export const OneClickErrorEnum = {

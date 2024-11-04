@@ -3,10 +3,7 @@ import { MainLayout } from '@/components/layouts/main-layout';
 
 import { PageHeader } from '@/components/UI/PageHeader';
 
-import {
-  requestGenerateOtpAndSendSms,
-  requestValidateOtp,
-} from '@/services/client/otp-request-service';
+import { requestSendSms } from '@/services/client/otp-request-service';
 
 import DobStep from '@/components/register/DobFormStep';
 import OtpStep from '@/components/register/OtpStep';
@@ -14,18 +11,22 @@ import PhoneStep from '@/components/register/PhoneStep';
 import SignupOneClickFormStep from '@/components/register/SignupOneClickFormStep';
 import { SignupOneClickForm } from '@/components/register/SignupOneClickFormStep/signup-one-click.schema';
 import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
-import { postOneClick } from '@/services/client/one-click-request-service';
+import LegalLanguage from '@/components/UI/LegalLanguage';
+import {
+  getOneClick,
+  patchOneClick,
+  postOneClick,
+} from '@/services/client/one-click-request-service';
 import {
   OneClickCredentials,
   OneClickErrorEnum,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
-import { Alert, Container, Link, Portal, Snackbar } from '@mui/material';
-import { Typography, When } from '@verifiedinc/shared-ui-elements/components';
+import { Alert, Container, Portal, Snackbar } from '@mui/material';
+import { When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import LegalLanguage from '@/components/UI/LegalLanguage';
 
 enum Steps {
   PHONE = 1,
@@ -35,9 +36,11 @@ enum Steps {
   SUCCESS = 5,
 }
 
-function OneClickNonHosted() {
+function OneClickSemiHosted() {
   const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
+  const [oneClickPostUuid, setOneClickPostUuid] = useState<string>();
+  const [otp, setOtp] = useState<string>();
   const disclosure = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const [credentials, setCredentials] = useState<OneClickCredentials | null>(
@@ -51,27 +54,34 @@ function OneClickNonHosted() {
   const router = useRouter();
 
   const handleValidPhone = async (phone: string) => {
+    setIsLoading(true);
     setPhone(phone);
-    setIsLoading(true);
-    await generateOtp(phone);
-    setIsLoading(false);
-  };
-
-  const handleValidOtp = async (otpCode: string) => {
-    setIsLoading(true);
-
-    const otpResponse = await requestValidateOtp({ otpCode, phone });
-    console.log(otpResponse, { otpCode, phone });
-    if (otpResponse?.error) {
-      updateSnackbarMessage(`${otpResponse.error}: ${otpCode}`, true);
-      setIsLoading(false);
-      return;
-    }
 
     const response: OneClickPostResponse = await postOneClick({ phone });
     console.log(response);
-    if ('identity' in response) {
-      setCredentials(response?.identity?.credentials ?? null);
+    if ('uuid' in response) {
+      setOtp(response.code);
+      setOneClickPostUuid(response.uuid);
+      setStep(Steps.OTP);
+    } else {
+      updateSnackbarMessage(
+        'data' in response ? response.message : 'An unexpected error happened',
+        true,
+      );
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleValidOtp = async (userInputedOtp?: string) => {
+    setIsLoading(true);
+    const response = await getOneClick(
+      oneClickPostUuid as string,
+      userInputedOtp as string,
+    );
+
+    if ('credentials' in response) {
+      setCredentials(response?.credentials ?? null);
       setStep(Steps.FORM);
     } else if (
       'data' in response &&
@@ -91,9 +101,11 @@ function OneClickNonHosted() {
   const handleValidDob = async (birthDate: string) => {
     setIsLoading(true);
 
-    const response = await postOneClick({ phone, birthDate });
-    if ('identity' in response) {
-      setCredentials(response?.identity?.credentials ?? null);
+    const response = await patchOneClick(oneClickPostUuid as string, {
+      birthDate,
+    });
+    if ('credentials' in response) {
+      setCredentials(response?.credentials ?? null);
       setStep(Steps.FORM);
     } else {
       updateSnackbarMessage(
@@ -106,8 +118,7 @@ function OneClickNonHosted() {
   };
 
   const handleRetryResendOtp = (phone: string) => {
-    updateSnackbarMessage('Sms sent successfully');
-    generateOtp(phone);
+    resendSms(phone);
   };
 
   const handleFormSubmit = (data: SignupOneClickForm) => {
@@ -115,13 +126,13 @@ function OneClickNonHosted() {
     setStep(5);
   };
 
-  const generateOtp = async (phone: string) => {
-    const response = await requestGenerateOtpAndSendSms({ phone });
+  const resendSms = async (phone: string) => {
+    const response = await requestSendSms({ phone, otp: otp as string });
     if (response.error) {
       updateSnackbarMessage(response.error, true);
       return;
     }
-
+    updateSnackbarMessage('Sms sent successfully');
     setStep(Steps.OTP);
   };
 
@@ -138,7 +149,7 @@ function OneClickNonHosted() {
     <>
       <Head page='Register' />
       <PageHeader
-        title='Register with 1-click Non-Hosted'
+        title='1-click Semi-Hosted Register'
         description="It's Slooow, but not slow"
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>
@@ -153,6 +164,7 @@ function OneClickNonHosted() {
             phone={phone}
             onRetryResendOtp={handleRetryResendOtp}
             onValidate={handleValidOtp}
+            shouldVerifyOtpIsValid={false}
             isLoading={isLoading}
           />
         </When>
@@ -182,8 +194,8 @@ function OneClickNonHosted() {
   );
 }
 
-OneClickNonHosted.auth = {};
+OneClickSemiHosted.auth = {};
 
-OneClickNonHosted.getLayout = MainLayout;
+OneClickSemiHosted.getLayout = MainLayout;
 
-export default OneClickNonHosted;
+export default OneClickSemiHosted;
