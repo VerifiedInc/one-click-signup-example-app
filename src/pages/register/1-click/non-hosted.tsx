@@ -22,6 +22,7 @@ import { Typography, When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import LegalLanguage from '@/components/UI/LegalLanguage';
 
 enum Steps {
   PHONE = 1,
@@ -130,17 +131,7 @@ function OneClickNonHosted() {
       <Container maxWidth='xs' sx={{ py: 3 }}>
         <When value={step === Steps.PHONE}>
           <PhoneStep onValidPhone={handleValidPhone} disabled={isLoading}>
-            <Typography variant='body2' color='textSecondary'>
-              By entering your phone number, you agree to create a Verified
-              account for 1-Click Signup at Slooow and other supported sites,
-              and you agree to Verified's{' '}
-              <Link
-                color='primary'
-                href='https://verified.inc/legal#terms-of-use'
-              >
-                Terms of Use.
-              </Link>
-            </Typography>
+            <LegalLanguage />
           </PhoneStep>
         </When>
 
