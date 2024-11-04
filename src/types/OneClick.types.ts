@@ -17,7 +17,7 @@ export type OneClickCredentials = {
 };
 
 type SuccessOneClickResponse = {
-  identity: {
+  identity?: {
     identifiers: {
       phone: string;
     };

@@ -20,9 +20,8 @@ import {
 import { Alert, Container, Link, Portal, Snackbar } from '@mui/material';
 import { Typography, When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
-import { useState } from 'react';
-import { set } from 'lodash';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 enum Steps {
   PHONE = 1,
@@ -35,7 +34,6 @@ enum Steps {
 function OneClickNonHosted() {
   const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
-  const [dob, setDob] = useState('');
   const disclosure = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const [credentials, setCredentials] = useState<OneClickCredentials | null>(
@@ -59,15 +57,19 @@ function OneClickNonHosted() {
     setIsLoading(true);
     const response: OneClickResponse = await postOneClick({ phone });
     if ('identity' in response) {
-      setCredentials(response.identity.credentials);
+      setCredentials(response?.identity?.credentials ?? null);
       setStep(Steps.FORM);
     } else if (
+      'data' in response &&
       response.data?.errorCode ===
-      OneClickErrorEnum.ADDITIONAL_INFORMATION_REQUIRED
+        OneClickErrorEnum.ADDITIONAL_INFORMATION_REQUIRED
     ) {
       setStep(Steps.DOB);
     } else {
-      updateSnackbarMessage(response.message, true);
+      updateSnackbarMessage(
+        'data' in response ? response.message : 'An unexpected error happened',
+        true,
+      );
     }
     setIsLoading(false);
   };
@@ -77,10 +79,13 @@ function OneClickNonHosted() {
 
     const response = await postOneClick({ phone, birthDate });
     if ('identity' in response) {
-      setCredentials(response.identity.credentials);
+      setCredentials(response?.identity?.credentials ?? null);
       setStep(Steps.FORM);
     } else {
-      updateSnackbarMessage(response.message, true);
+      updateSnackbarMessage(
+        'data' in response ? response.message : 'An unexpected error happened',
+        true,
+      );
     }
 
     setIsLoading(false);
