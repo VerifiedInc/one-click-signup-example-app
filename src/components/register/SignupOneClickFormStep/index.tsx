@@ -24,38 +24,7 @@ interface SignupOneClickFormStepProps {
 }
 
 export default function SignupOneClickFormStep({
-  credentials = {
-    phone: '+10123456789',
-    address: [
-      {
-        line1: '5320 Newell Rd',
-        city: 'Palo Alto',
-        state: 'CA',
-        zipCode: '94303',
-        country: 'US',
-      },
-      {
-        line1: '9536 Meadow Dr',
-        city: 'San Francisco',
-        state: 'CA',
-        zipCode: '94112',
-        country: 'US',
-      },
-      {
-        line1: '7292 Hanover St',
-        city: 'San Jose',
-        state: 'CA',
-        zipCode: '95122',
-        country: 'US',
-      },
-    ],
-    ssn: '123456789',
-    birthDate: '617976000000',
-    fullName: {
-      firstName: 'Richard',
-      lastName: 'Hendricks',
-    },
-  },
+  credentials,
   onSubmit,
 }: SignupOneClickFormStepProps): ReactNode {
   const {

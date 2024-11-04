@@ -1,6 +1,5 @@
 import {
   fieldSchema,
-  getUnixSchema,
   SSNSchema,
   stateSchema,
 } from '@verifiedinc/shared-ui-elements/validations';
