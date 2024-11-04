@@ -21,10 +21,21 @@ import { Alert, Container, Link, Portal, Snackbar } from '@mui/material';
 import { Typography, When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
 import { useState } from 'react';
+import { set } from 'lodash';
+import { useRouter } from 'next/router';
+
+enum Steps {
+  PHONE = 1,
+  OTP = 2,
+  DOB = 3,
+  FORM = 4,
+  SUCCESS = 5,
+}
 
 function OneClickNonHosted() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
+  const [dob, setDob] = useState('');
   const disclosure = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const [credentials, setCredentials] = useState<OneClickCredentials | null>(
@@ -35,33 +46,54 @@ function OneClickNonHosted() {
     isError: true,
   });
 
+  const router = useRouter();
+
   const handleValidPhone = async (phone: string) => {
     setPhone(phone);
     setIsLoading(true);
+    await generateOtp(phone);
+    setIsLoading(false);
+  };
+
+  const handleValidOtp = async () => {
+    setIsLoading(true);
     const response: OneClickResponse = await postOneClick({ phone });
     if ('identity' in response) {
-      console.log(response.identity.credentials);
       setCredentials(response.identity.credentials);
-      await generateOtp(phone);
+      setStep(Steps.FORM);
     } else if (
       response.data?.errorCode ===
       OneClickErrorEnum.ADDITIONAL_INFORMATION_REQUIRED
     ) {
-      setStep(2);
+      setStep(Steps.DOB);
     } else {
       updateSnackbarMessage(response.message, true);
     }
-    // setStep(2);
-
     setIsLoading(false);
   };
 
   const handleValidDob = async (birthDate: string) => {
     setIsLoading(true);
-    console.log(birthDate);
+
     const response = await postOneClick({ phone, birthDate });
-    console.log(response);
+    if ('identity' in response) {
+      setCredentials(response.identity.credentials);
+      setStep(Steps.FORM);
+    } else {
+      updateSnackbarMessage(response.message, true);
+    }
+
     setIsLoading(false);
+  };
+
+  const handleRetryResendOtp = (phone: string) => {
+    updateSnackbarMessage('Sms sent successfully');
+    generateOtp(phone);
+  };
+
+  const handleFormSubmit = (data: SignupOneClickForm) => {
+    console.log(data);
+    setStep(5);
   };
 
   const generateOtp = async (phone: string) => {
@@ -71,21 +103,7 @@ function OneClickNonHosted() {
       return;
     }
 
-    setStep(3);
-  };
-
-  const handleRetryResendOtp = (phone: string) => {
-    updateSnackbarMessage('Sms sent successfully');
-    generateOtp(phone);
-  };
-
-  const handleValidOtp = async () => {
-    setStep(4);
-  };
-
-  const handleFormSubmit = (data: SignupOneClickForm) => {
-    console.log(data);
-    setStep(5);
+    setStep(Steps.OTP);
   };
 
   const updateSnackbarMessage = (message: string, isError = false) => {
@@ -94,8 +112,7 @@ function OneClickNonHosted() {
   };
 
   const reset = () => {
-    setStep(1);
-    setPhone('');
+    router.reload();
   };
 
   return (
@@ -106,7 +123,7 @@ function OneClickNonHosted() {
         description="It's Slooow, but not slow"
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>
-        <When value={step === 1}>
+        <When value={step === Steps.PHONE}>
           <PhoneStep onValidPhone={handleValidPhone} disabled={isLoading}>
             <Typography variant='body2' color='textSecondary'>
               By entering your phone number, you agree to create a Verified
@@ -121,24 +138,27 @@ function OneClickNonHosted() {
             </Typography>
           </PhoneStep>
         </When>
-        <When value={step === 2}>
-          <DobStep onValidDob={handleValidDob} disabled={isLoading} />
-        </When>
 
-        <When value={!!phone && step === 3}>
+        <When value={!!phone && step === Steps.OTP}>
           <OtpStep
             phone={phone}
             onRetryResendOtp={handleRetryResendOtp}
             onValidate={handleValidOtp}
+            isLoading={isLoading}
           />
         </When>
-        <When value={step === 4}>
+
+        <When value={step === Steps.DOB}>
+          <DobStep onValidDob={handleValidDob} disabled={isLoading} />
+        </When>
+
+        <When value={step === Steps.FORM}>
           <SignupOneClickFormStep
             onSubmit={handleFormSubmit}
             credentials={credentials}
           />
         </When>
-        <When value={step === 5}>
+        <When value={step === Steps.SUCCESS}>
           <SuccessfulSignUpStep onSignOut={reset} />
         </When>
       </Container>

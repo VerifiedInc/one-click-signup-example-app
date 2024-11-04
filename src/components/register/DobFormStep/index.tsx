@@ -5,7 +5,6 @@ import {
   Image,
   Typography,
 } from '@verifiedinc/shared-ui-elements/components';
-import { formatDateDDMMYYYY } from '@verifiedinc/shared-ui-elements/utils';
 import { ReactNode } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { DobForm, dobFormSchema } from './dob.schema';
@@ -29,9 +28,9 @@ export default function DobFormStep({
   });
 
   const onSubmit = (data: DobForm) => {
-    // Format the unix timestamp date to MM/DD/YYYY
-    console.log(data);
-    const formatedDate = formatDateDDMMYYYY(data.dob);
+    // Format the unix timestamp date to YYYY-MM-DD
+    const formatedDate = new Date(Number(data.dob)).toISOString().split('T')[0];
+
     onValidDob(formatedDate);
     reset();
   };

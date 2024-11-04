@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    postOneClick(req, res);
+    return postOneClick(req, res);
   }
 }
 
@@ -21,7 +21,7 @@ async function postOneClick(req: NextApiRequest, res: NextApiResponse) {
         Authorization: apiKey,
       },
     }).then((response) => response.json());
-    return res.status(400).json(response);
+    return res.status(200).json(response);
   } catch (error: any) {
     console.log(error);
     return res.status(400).json({

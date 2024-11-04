@@ -14,9 +14,17 @@ import { Alert, Container, Portal, Snackbar } from '@mui/material';
 import { Image, When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
+enum Steps {
+  PHONE = 1,
+  OTP = 2,
+  FORM = 3,
+  SUCCESS = 4,
+}
 function Register() {
-  const [step, setStep] = useState(1);
+  const router = useRouter();
+  const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
   const disclosure = useDisclosure();
   const [snackbarMessage, setSnackbarMessage] = useState({
@@ -36,7 +44,7 @@ function Register() {
       updateSnackbarMessage(response.error, true);
     } else {
       setPhone(phone);
-      setStep(2);
+      setStep(Steps.OTP);
     }
   };
 
@@ -47,12 +55,11 @@ function Register() {
 
   const handleFormSubmit = (data: SimpleSignupForm) => {
     console.log(data);
-    setStep(4);
+    setStep(Steps.SUCCESS);
   };
 
   const reset = () => {
-    setStep(1);
-    setPhone('');
+    router.reload();
   };
 
   return (
@@ -63,21 +70,21 @@ function Register() {
         description='This might be Slooow'
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>
-        <When value={step === 1}>
+        <When value={step === Steps.PHONE}>
           <PhoneStep onValidPhone={handleGenerateOtpAndSendSms} />
         </When>
 
-        <When value={!!phone && step === 2}>
+        <When value={!!phone && step === Steps.OTP}>
           <OtpStep
             phone={phone}
             onRetryResendOtp={handleRetryResendOtp}
             onValidate={() => setStep(3)}
           />
         </When>
-        <When value={step === 3}>
+        <When value={step === Steps.FORM}>
           <SimpleSignupFormStep onSubmit={handleFormSubmit} />
         </When>
-        <When value={step === 4}>
+        <When value={step === Steps.SUCCESS}>
           <SuccessfulSignUpStep onSignOut={reset} />
         </When>
       </Container>

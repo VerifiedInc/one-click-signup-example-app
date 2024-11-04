@@ -1,19 +1,18 @@
 import {
   fieldSchema,
   SSNSchema,
-  getUnixSchema,
   stateSchema,
 } from '@verifiedinc/shared-ui-elements/validations';
 import * as z from 'zod';
 
 export const signupFormSchema = z.object({
   firstName: fieldSchema,
-  middleName: fieldSchema,
   lastName: fieldSchema,
-  dob: getUnixSchema('Invalid Date of Birth'),
+  dob: z.date().refine((date) => date.getTime() < Date.now(), {
+    message: 'Date of birth must be in the past',
+  }),
   ssn: SSNSchema,
   addressLine1: fieldSchema,
-  addressLine2: fieldSchema,
   city: fieldSchema,
   state: stateSchema,
   zip: fieldSchema,
