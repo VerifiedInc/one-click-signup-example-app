@@ -28,6 +28,8 @@ import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
+// Has all the steps for the registration process
+// The components will be rendered according the step state
 enum Steps {
   PHONE = 1,
   OTP = 2,
@@ -37,15 +39,21 @@ enum Steps {
 }
 
 function OneClickSemiHosted() {
+  // First step is the phone number form
   const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
+
+  // holds the uuid of the one click post request
+  // We need this to get the credentials after the first POST request
   const [oneClickPostUuid, setOneClickPostUuid] = useState<string>();
-  const [otp, setOtp] = useState<string>();
-  const disclosure = useDisclosure();
-  const [isLoading, setIsLoading] = useState(false);
+
+  // This will hold the credentials which will be used to fill the form
   const [credentials, setCredentials] = useState<OneClickCredentials | null>(
     null,
   );
+  const [otp, setOtp] = useState<string>();
+  const disclosure = useDisclosure();
+  const [isLoading, setIsLoading] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState({
     message: '',
     isError: true,
@@ -53,6 +61,9 @@ function OneClickSemiHosted() {
 
   const router = useRouter();
 
+  // Function to handle the post request to the one click endpoint
+  // It is called when the user finishes typing the phone number
+  // With the otp code we can send the sms and validate the otp
   const handleValidPhone = async (phone: string) => {
     setIsLoading(true);
     setPhone(phone);
@@ -73,6 +84,9 @@ function OneClickSemiHosted() {
     setIsLoading(false);
   };
 
+  // Function to handle the validation of the otp code
+  // It is called when the user finishes typing the otp code
+  // With the valid otp we can get the credentials on the GET request
   const handleValidOtp = async (userInputedOtp?: string) => {
     setIsLoading(true);
     const response = await getOneClick(
@@ -80,9 +94,12 @@ function OneClickSemiHosted() {
       userInputedOtp as string,
     );
 
+    // If the response contains credentials we can show the form
     if ('credentials' in response) {
       setCredentials(response?.credentials ?? null);
       setStep(Steps.FORM);
+
+      // If the response contains ADDITIONAL_INFORMATION_REQUIRED we need to ask for the dob
     } else if (
       'data' in response &&
       response.data?.errorCode ===
@@ -98,6 +115,9 @@ function OneClickSemiHosted() {
     setIsLoading(false);
   };
 
+  // Function to handle the validation of the dob
+  // It is called when the user finishes typing the dob
+  // With the valid dob we can patch the one click endpoint and get the credentials
   const handleValidDob = async (birthDate: string) => {
     setIsLoading(true);
 
@@ -117,15 +137,20 @@ function OneClickSemiHosted() {
     setIsLoading(false);
   };
 
+  // Function to handle the retry resend otp
+  // It is called when the user clicks on the resend otp button
   const handleRetryResendOtp = (phone: string) => {
     resendSms(phone);
   };
 
+  // Function to handle the register form submit
+  // It is called when the user finishes filling the form
   const handleFormSubmit = (data: SignupOneClickForm) => {
     console.log(data);
     setStep(Steps.SUCCESS);
   };
 
+  // Function to resend the sms
   const resendSms = async (phone: string) => {
     const response = await requestSendSms({ phone, otp: otp as string });
     if (response.error) {
@@ -141,6 +166,7 @@ function OneClickSemiHosted() {
     disclosure.onOpen();
   };
 
+  // Function to reload the page
   const reset = () => {
     router.reload();
   };

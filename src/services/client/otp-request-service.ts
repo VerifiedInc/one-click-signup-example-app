@@ -7,6 +7,8 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
+// Request to next API to validate the OTP code
+// You can see the implementation in src/pages/api/verify-otp.ts
 export const requestValidateOtp = async (payload: {
   otpCode: string;
   phone: string;
@@ -18,6 +20,8 @@ export const requestValidateOtp = async (payload: {
   }).then((response) => response.json());
 };
 
+// Request to next API to generate the OTP code and send the SMS
+// You can see the implementation in src/pages/api/generate-otp-and-send-sms.ts
 export const requestGenerateOtpAndSendSms = async (payload: {
   phone: string;
 }): Promise<{ error?: string }> => {
@@ -28,6 +32,8 @@ export const requestGenerateOtpAndSendSms = async (payload: {
   }).then((response) => response.json());
 };
 
+// Request to next API to send the SMS
+// You can see the implementation in src/pages/api/send-sms.ts
 export const requestSendSms = async (payload: {
   phone: string;
   otp: string;

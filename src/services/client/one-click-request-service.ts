@@ -16,6 +16,11 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
+/**
+ * Request to next API to do a POST 1-click request
+ * @see https://docs.verified.inc/endpoints#post-1-click
+ * You can see the implementation in src/pages/api/1-click/index.ts
+ */
 export const postOneClick = async (
   payload: OneClickPostRequest,
 ): Promise<OneClickPostResponse> => {
@@ -26,6 +31,11 @@ export const postOneClick = async (
   }).then((response) => response.json());
 };
 
+/**
+ * Request to next API to do a PATCH 1-click request
+ * @see https://docs.verified.inc/endpoints#patch-1-click
+ * You can see the implementation in src/pages/api/1-click/index.ts
+ */
 export const patchOneClick = async (
   uuid: string,
   payload: OneClickPatchRequest,
@@ -37,6 +47,12 @@ export const patchOneClick = async (
   }).then((response) => response.json());
 };
 
+/**
+ *
+ * Request to next API to a GET 1-click request
+ * @see https://docs.verified.inc/endpoints#get-1-click
+ * You can see the implementation in src/pages/api/1-click/index.ts
+ */
 export const getOneClick = async (
   uuid: string,
   code?: string,

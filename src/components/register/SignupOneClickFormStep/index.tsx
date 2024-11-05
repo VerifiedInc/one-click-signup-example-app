@@ -22,11 +22,14 @@ interface SignupOneClickFormStepProps {
   onSubmit: (data: SignupOneClickForm) => void;
   credentials: OneClickCredentials | null;
 }
-
+// Form to fill the user information
+// It will fill the user information with the data from the one click credentials
+// If the user doesn't have the credentials, it will show an empty form
 export default function SignupOneClickFormStep({
   credentials,
   onSubmit,
 }: SignupOneClickFormStepProps): ReactNode {
+  // React hook form to handle the form state
   const {
     register,
     trigger,
@@ -37,12 +40,14 @@ export default function SignupOneClickFormStep({
   } = useForm<SignupOneClickForm>({
     resolver: zodResolver(signupOneClickFormSchema),
   });
-
+  // This state will hold the index of the selected address
   const [selectedAddressIndex, setSelectedAddressIndex] = useState<
     number | null
   >(null);
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
 
+  // Build the options for the address select input
+  // Makes use of react useMemo to avoid re-rendering the options on every render
   const buildAddressOptions = useMemo(() => {
     const options = [
       {
@@ -63,6 +68,9 @@ export default function SignupOneClickFormStep({
     return options;
   }, [credentials?.address]);
 
+  // Function to handle the selected address input
+  // It will set the selected address index and fill the form fields with the address data
+  // If the user selects the add new address option, it will clear the form fields
   const handleSelectAddressOption = (
     option: { label: string; id: string } | null,
   ) => {
@@ -102,12 +110,17 @@ export default function SignupOneClickFormStep({
     };
   };
 
+  // Fill the default value of the date of birth field
+  // This is one way of handling uncontrolled components with react hook form
   useEffect(() => {
     if (credentials?.birthDate) {
       setValue('dob', new Date(formatDateMMDDYYYY(credentials.birthDate)));
     }
   }, [credentials?.birthDate]);
 
+  // If the user doesn't select an address and tries to submit the form
+  // It will show an error message bellow the address select input
+  // Necessary because the select input is not really part of the form, it's used to control the address fields
   const renderAddressSelectErrorMessage = () => {
     if (errors.addressLine1 && selectedAddressIndex === null) {
       return {
