@@ -39,9 +39,9 @@ export const patchOneClick = async (
 
 export const getOneClick = async (
   uuid: string,
-  userInput: string,
+  code?: string,
 ): Promise<OneClickGetResponse> => {
-  return fetch(`/api/1-click?uuid=${uuid}&userInput=${userInput}`, {
+  return fetch(`/api/1-click?uuid=${uuid}${code ? `&code=${code}` : ''}`, {
     method: 'GET',
     headers,
   }).then((response) => response.json());

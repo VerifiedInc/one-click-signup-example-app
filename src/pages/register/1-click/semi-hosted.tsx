@@ -123,7 +123,7 @@ function OneClickSemiHosted() {
 
   const handleFormSubmit = (data: SignupOneClickForm) => {
     console.log(data);
-    setStep(5);
+    setStep(Steps.SUCCESS);
   };
 
   const resendSms = async (phone: string) => {

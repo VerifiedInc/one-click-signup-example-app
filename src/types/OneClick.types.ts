@@ -29,6 +29,7 @@ type SuccessOneClickResponse = {
   identity?: OneClickEntity;
   uuid: string;
   code?: string;
+  url?: string;
 };
 
 type ErrorOneClick = {
@@ -50,6 +51,11 @@ export type OneClickPostRequest = {
   phone: string;
   email?: string;
   birthDate?: string;
+  content?: {
+    title?: 'Signup' | 'Login' | 'Verify' | 'Apply';
+    description?: string;
+  };
+  redirectUrl?: string;
 };
 
 export type OneClickPatchRequest = {
