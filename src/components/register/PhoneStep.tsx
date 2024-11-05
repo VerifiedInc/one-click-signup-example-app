@@ -22,7 +22,8 @@ export default function PhoneStep({
       <Image
         src={'/slooow.png'}
         alt={'logo'}
-        maxWidth='200px'
+        width='200px'
+        height='224px'
         component='img'
         sx={{ pb: 3 }}
       />

@@ -51,7 +51,7 @@ function generateOTP(phone: string) {
   return otp;
 }
 
-function sendSms(phone: string, code: string) {
+export function sendSms(phone: string, code: string) {
   // This function would send an SMS to the provided phone number
   // For the sake of this example, we will just log the phone and code
   console.log(`Sending SMS to ${phone} with code ${code}`);

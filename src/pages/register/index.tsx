@@ -3,7 +3,10 @@ import { MainLayout } from '@/components/layouts/main-layout';
 
 import { PageHeader } from '@/components/UI/PageHeader';
 
-import { requestGenerateOtpAndSendSms } from '@/services/client/otp-request-service';
+import {
+  requestGenerateOtpAndSendSms,
+  requestValidateOtp,
+} from '@/services/client/otp-request-service';
 
 import SimpleSignupFormStep from '@/components/register/SimpleSignupFormStep';
 import { SimpleSignupForm } from '@/components/register/SimpleSignupFormStep/simple-signup.schema';
@@ -24,6 +27,7 @@ enum Steps {
 }
 function Register() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
   const disclosure = useDisclosure();
@@ -46,6 +50,17 @@ function Register() {
       setPhone(phone);
       setStep(Steps.OTP);
     }
+  };
+
+  const handleValidateOtp = async (otpCode: string) => {
+    setIsLoading(true);
+    const otpResponse = await requestValidateOtp({ otpCode, phone });
+    if (otpResponse?.error) {
+      updateSnackbarMessage(`${otpResponse.error}: ${otpCode}`, true);
+    } else {
+      setStep(Steps.FORM);
+    }
+    setIsLoading(false);
   };
 
   const handleRetryResendOtp = (phone: string) => {
@@ -78,7 +93,8 @@ function Register() {
           <OtpStep
             phone={phone}
             onRetryResendOtp={handleRetryResendOtp}
-            onValidate={() => setStep(3)}
+            onValidate={handleValidateOtp}
+            isLoading={isLoading}
           />
         </When>
         <When value={step === Steps.FORM}>
