@@ -5,7 +5,6 @@ import {
 } from '@verifiedinc/shared-ui-elements/components';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ResendPhoneBanner } from './ResendPhoneBanner';
-import { set } from 'lodash';
 
 interface OtpStepProps {
   phone: string;
@@ -31,8 +30,11 @@ export default function OtpStep({
   // It's called when the isLoading state changes
   // It has a delay to do the clear action so the user can see the last inputed digit
   const updateDisableStateAndClearOtp = () => {
+    // If the isLoading state is true, we disable the input right away
     if (isLoading) setIsDisabled(true);
 
+    // If the isLoading state is false we add a delay to clear the input
+    // the check isDisabled !== null is to avoid the input to be cleared when the component is mounted
     if (
       isDisabled !== null &&
       !isLoading &&
