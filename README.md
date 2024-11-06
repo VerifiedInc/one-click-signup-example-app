@@ -17,8 +17,6 @@ For more information, see the [Verified Quick Start Guide](https://docs.verified
 
 ## Getting Started
 
-This is a Next.js project.
-
 1. Setup Environment Variables
 
    • Rename the .env.example file to .env.
@@ -53,11 +51,33 @@ You can also access the paths for each integration on the browser:
 3. 1-Click Semi-Hosted -> [/register/1-click/semi-hosted](http://localhost:3061/register/1-click/semi-hosted)
 4. 1-Click Non-Hosted -> [/register/1-click/non-hosted](http://localhost:3061/register/1-click/non-hosted)
 
-If you're new to Next.js, navigate to the `src/pages/register directory`. Inside, you'll find a page for each integration type to help you understand the entire process.
+When you reach the OTP form, the correct code will be logged in the browser console. Note: This is only for demonstration purposes—avoid logging sensitive information in real applications.
 
+## Project Structure
+
+This project uses Next.js, combining a client-side frontend with a server-side API.
+
+If you’re new to Next.js, start by exploring the `src/pages/register directory` directory. Here, you’ll find pages for different registration integrations, each designed to guide you through the process.
 For example:
 
-1. `src/pages/register/index.tsx` – This page handles the registration flow without 1-click integration. It is a great place to start.
+1. `src/pages/register/index.tsx` – This page handles the registration flow without 1-click integration. A great starting point for understanding the basics.
 2. `src/pages/register/1-click/hosted.tsx` – This page is for the registration flow with the 1-click hosted integration.
 
 See [Nextjs Pages docs](https://nextjs.org/docs/pages/building-your-application/routing/pages-and-layouts) for more details on the routing system.
+
+## Setting Up Your Hosted Redirect URL for Local Development Testing
+
+To test the 1-click hosted integration locally, you’ll need to configure the `NEXT_PUBLIC_REDIRECT_URL` environment variable. If this variable is left empty, the hosted flow will default to the brand’s main redirect URL.
+
+**Important**: Setting `http://localhost:3061` won’t work due to security restrictions. Instead, use a tunneling service like Ngrok or Localtunnel to create a secure, publicly accessible URL.
+
+Example with localtunnel:
+Install it globally (`npm install -g localtunnel`) and run `lt --port 3061`.
+
+It will generate some url. Add it to your .env file:
+
+Example:
+
+```
+NEXT_PUBLIC_BASE_URL=https://test-test-test.loca.lt
+```

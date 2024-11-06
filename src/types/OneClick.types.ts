@@ -16,13 +16,11 @@ export type OneClickCredentials = {
   ssn?: string;
 };
 
-type OneClickEntity = {
+export type OneClickEntity = {
   identifiers: {
     phone: string;
   };
   credentials: OneClickCredentials;
-  birthDate: string;
-  ssn: string;
 };
 
 type SuccessOneClickResponse = {

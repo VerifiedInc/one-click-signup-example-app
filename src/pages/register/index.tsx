@@ -48,6 +48,7 @@ function Register() {
     if (response?.error) {
       updateSnackbarMessage(response.error, true);
     } else {
+      console.log('Enter the otp: 111111');
       setPhone(phone);
       setStep(Steps.OTP);
     }

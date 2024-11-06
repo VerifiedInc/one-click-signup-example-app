@@ -41,7 +41,7 @@ export default function OtpStep({
       oneClickSignupSubmitInputRef.current
     ) {
       setTimeout(() => {
-        oneClickSignupSubmitInputRef.current.clear();
+        oneClickSignupSubmitInputRef?.current?.clear();
         setIsDisabled(false);
       }, 1000);
     }
