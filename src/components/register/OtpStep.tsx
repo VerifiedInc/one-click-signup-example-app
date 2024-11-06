@@ -13,7 +13,7 @@ interface OtpStepProps {
   isLoading?: boolean;
   shouldVerifyOtpIsValid?: boolean;
 }
-
+// Component to render the otp input and the resend phone banner
 export default function OtpStep({
   phone,
   onValidate,
@@ -22,8 +22,8 @@ export default function OtpStep({
 }: OtpStepProps): ReactNode {
   const oneClickSignupSubmitInputRef = useRef<OTPInputInstance | null>(null);
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [refresh, setRefresh] = useState(false); // State to trigger re-render of otp input
+  // State to trigger re-render of otp input
+  const [refresh, setRefresh] = useState(false);
 
   const handleClear = () => {
     setRefresh((prev) => !prev); // Toggle state to trigger re-render
@@ -34,6 +34,8 @@ export default function OtpStep({
     handleClear();
   };
 
+  // Clear the input when the refresh state changes
+  // Necessary to make sure the clear will trigger a re-render
   useEffect(() => {
     oneClickSignupSubmitInputRef.current?.clear(); // Clear the input
   }, [refresh]);

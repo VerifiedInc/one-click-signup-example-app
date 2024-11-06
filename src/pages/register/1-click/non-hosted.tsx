@@ -14,19 +14,21 @@ import PhoneStep from '@/components/register/PhoneStep';
 import SignupOneClickFormStep from '@/components/register/SignupOneClickFormStep';
 import { SignupOneClickForm } from '@/components/register/SignupOneClickFormStep/signup-one-click.schema';
 import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
+import LegalLanguage from '@/components/UI/LegalLanguage';
 import { postOneClick } from '@/services/client/one-click-request-service';
 import {
   OneClickCredentials,
   OneClickErrorEnum,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
-import { Alert, Container, Link, Portal, Snackbar } from '@mui/material';
-import { Typography, When } from '@verifiedinc/shared-ui-elements/components';
+import { Alert, Container, Portal, Snackbar } from '@mui/material';
+import { When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import LegalLanguage from '@/components/UI/LegalLanguage';
 
+// Has all the steps for the registration process
+// The components will be rendered according the step state
 enum Steps {
   PHONE = 1,
   OTP = 2,
@@ -36,6 +38,7 @@ enum Steps {
 }
 
 function OneClickNonHosted() {
+  // First step is the phone number form
   const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
   const disclosure = useDisclosure();
@@ -50,6 +53,7 @@ function OneClickNonHosted() {
 
   const router = useRouter();
 
+  // Called when the user finishes typing the phone number
   const handleValidPhone = async (phone: string) => {
     setPhone(phone);
     setIsLoading(true);
@@ -57,6 +61,9 @@ function OneClickNonHosted() {
     setIsLoading(false);
   };
 
+  // Called when the user finishes typing the otp code
+  // Will validate the otp code
+  // If the otp code is valid, it will call the postOneClick and set the credentials
   const handleValidOtp = async (otpCode: string) => {
     setIsLoading(true);
 
@@ -72,6 +79,8 @@ function OneClickNonHosted() {
     if ('identity' in response) {
       setCredentials(response?.identity?.credentials ?? null);
       setStep(Steps.FORM);
+
+      // If the response has the errorCode ADDITIONAL_INFORMATION_REQUIRED it means that we need to ask for the DOB
     } else if (
       'data' in response &&
       response.data?.errorCode ===
@@ -87,6 +96,8 @@ function OneClickNonHosted() {
     setIsLoading(false);
   };
 
+  // Called when the user finishes typing the dob
+  // Will call the postOneClick again and set the credentials
   const handleValidDob = async (birthDate: string) => {
     setIsLoading(true);
 
@@ -114,6 +125,7 @@ function OneClickNonHosted() {
     setStep(5);
   };
 
+  // Function to generate the otp code and send the sms
   const generateOtp = async (phone: string) => {
     const response = await requestGenerateOtpAndSendSms({ phone });
     if (response.error) {

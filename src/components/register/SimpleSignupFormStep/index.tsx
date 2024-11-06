@@ -14,6 +14,9 @@ interface SimpleSignupFormStepProps {
   onSubmit: (data: SimpleSignupForm) => void;
 }
 
+// This component is a form with all the fields needed to sign up
+// It uses the SimpleSignupForm schema to validate the form
+// It doesn't have any 1-click implementation to it
 export default function SimpleSignupFormStep({
   onSubmit,
 }: SimpleSignupFormStepProps): ReactNode {
@@ -27,6 +30,7 @@ export default function SimpleSignupFormStep({
     resolver: zodResolver(signupFormSchema),
   });
 
+  // This function is used to get the common props for the form fields
   const getCommonFormProps = (fieldName: keyof SimpleSignupForm) => {
     return {
       ...register(fieldName),

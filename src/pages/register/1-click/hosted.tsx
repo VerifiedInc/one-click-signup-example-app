@@ -22,6 +22,8 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import LoadingSpinner from '@/components/UI/LoadingSpinner';
 
+// Has all the steps for the registration process
+// The components will be rendered according the step state
 enum Steps {
   LOADING = 1,
   PHONE = 2,
@@ -39,6 +41,11 @@ function OneClickHosted() {
 
   const router = useRouter();
 
+  // Function to call the one click post endpoint
+  // It is called when the user finishes typing the phone number
+  // It will redirect the user to the web wallet where the user will finish the registration
+  // If the NEXT_PUBLIC_BASE_URL is set, the user will be redirected back to this page once the registration is done
+  // Otherwise, the user will be redirected to the brand's default redirect url
   const handleValidPhone = async (phone: string) => {
     setIsLoading(true);
 
@@ -66,6 +73,7 @@ function OneClickHosted() {
     }
   };
 
+  // Function to send the sms and redirect the user to the wallet
   const sendSmsAndRedirect = async (
     phone: string,
     otp: string,
@@ -82,6 +90,7 @@ function OneClickHosted() {
   };
 
   // Redirect to the success page if the identityUuid is valid
+  // Otherwise, show an error message and prompt the user to type the phone number
   const handleGetIdentityUuid = async (identityUuid: string) => {
     setIsLoading(true);
     const response = await getOneClick(identityUuid as string);
@@ -108,8 +117,12 @@ function OneClickHosted() {
     router.push('/register/1-click/hosted');
   };
 
+  // Check if the identityUuid query parameter is present and call the getOneClick endpoint
+  // If the identityUuid is not present, just prompt the user to type the phone number
   useEffect(() => {
     // Check if the router is ready
+    // Necessary to wait for the router to be ready to get the query parameters
+    // While this is not ready, the page will be shown as loading
     if (!router.isReady) return;
 
     // Check if the identityUuid query parameter is present

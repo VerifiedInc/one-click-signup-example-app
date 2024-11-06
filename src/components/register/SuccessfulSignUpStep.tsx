@@ -4,7 +4,7 @@ import { VerifiedImage } from '@verifiedinc/shared-ui-elements/components';
 interface SuccessfulSignUpStepProps {
   onSignOut: () => void;
 }
-
+// This component is used to show the user that the sign up was successful
 export default function SuccessfulSignUpStep({
   onSignOut,
 }: SuccessfulSignUpStepProps) {
