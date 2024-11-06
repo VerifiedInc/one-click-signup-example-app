@@ -69,8 +69,8 @@ function OneClickSemiHosted() {
     setPhone(phone);
 
     const response: OneClickPostResponse = await postOneClick({ phone });
-    console.log(response);
     if ('uuid' in response) {
+      console.log('Enter the otp: ', response.code);
       setOtp(response.code);
       setOneClickPostUuid(response.uuid);
       setStep(Steps.OTP);
@@ -93,7 +93,7 @@ function OneClickSemiHosted() {
       oneClickPostUuid as string,
       userInputedOtp as string,
     );
-
+    console.log(response);
     // If the response contains credentials we can show the form
     if ('credentials' in response) {
       setCredentials(response?.credentials ?? null);
@@ -124,8 +124,10 @@ function OneClickSemiHosted() {
     const response = await patchOneClick(oneClickPostUuid as string, {
       birthDate,
     });
+    console.log(response);
     if ('credentials' in response) {
       setCredentials(response?.credentials ?? null);
+      console.log(response?.credentials);
       setStep(Steps.FORM);
     } else {
       updateSnackbarMessage(

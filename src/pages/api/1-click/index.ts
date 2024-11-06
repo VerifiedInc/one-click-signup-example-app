@@ -1,3 +1,26 @@
+/**
+ * This API is used to interact with the 1-click API
+ * It has 3 methods:
+ * - POST: To create a new 1-click
+ * - PATCH: To update a 1-click
+ * - GET: To get a 1-click
+ *
+ * In a real-world scenario you would wamt to validate the user input before working with it
+ * But for the sake of simplicity, we are not doing it here
+ *
+ * * IMPORTANT *
+ * One thing that you will always want to do is to mask the SSN before sending it to the client side
+ * @see https://docs.verified.inc/integration-guide#a-use-a-form-with-autofilled-inputs
+ */
+
+import {
+  OneClickEntity,
+  OneClickGetResponse,
+  OneClickPatchResponse,
+  OneClickPostResponse,
+} from '@/types/OneClick.types';
+import { getOneClickEnvsOrthrow } from '@/utils/api';
+import { ssnFormatter } from '@/utils/ssn';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,9 +35,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
 async function postOneClick(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const apiKey = process.env.ONE_CLICK_API_KEY;
-    const apiURL = process.env.ONE_CLICK_API_URL;
-    if (!apiKey || !apiURL) throw new Error('ONE_CLICK envs not set');
+    const { apiKey, apiURL } = getOneClickEnvsOrthrow();
 
     const response = await fetch(`${apiURL}/1-click`, {
       method: 'POST',
@@ -23,8 +44,13 @@ async function postOneClick(req: NextApiRequest, res: NextApiResponse) {
         'Content-Type': 'application/json',
         Authorization: apiKey,
       },
-    }).then((response) => response.json());
-    console.log(response);
+    }).then((response) => response.json() as Promise<OneClickPostResponse>);
+
+    // Mask the SSN before sending it to the client side
+    if ('identity' in response && response.identity) {
+      maskSSN(response.identity);
+    }
+
     return res.status(200).json(response);
   } catch (error: any) {
     console.log(error);
@@ -37,9 +63,7 @@ async function postOneClick(req: NextApiRequest, res: NextApiResponse) {
 async function patchOneClick(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { uuid } = req.query;
-    const apiKey = process.env.ONE_CLICK_API_KEY;
-    const apiURL = process.env.ONE_CLICK_API_URL;
-    if (!apiKey || !apiURL) throw new Error('ONE_CLICK envs not set');
+    const { apiKey, apiURL } = getOneClickEnvsOrthrow();
 
     const response = await fetch(`${apiURL}/1-click/${uuid}`, {
       method: 'PATCH',
@@ -48,7 +72,12 @@ async function patchOneClick(req: NextApiRequest, res: NextApiResponse) {
         'Content-Type': 'application/json',
         Authorization: apiKey,
       },
-    }).then((response) => response.json());
+    }).then((response) => response.json() as Promise<OneClickPatchResponse>);
+
+    // Mask the SSN before sending it to the client side
+    if ('credentials' in response) {
+      maskSSN(response);
+    }
 
     return res.status(200).json(response);
   } catch (error: any) {
@@ -62,10 +91,7 @@ async function patchOneClick(req: NextApiRequest, res: NextApiResponse) {
 async function getOneClick(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { uuid, code } = req.query;
-
-    const apiKey = process.env.ONE_CLICK_API_KEY;
-    const apiURL = process.env.ONE_CLICK_API_URL;
-    if (!apiKey || !apiURL) throw new Error('ONE_CLICK envs not set');
+    const { apiKey, apiURL } = getOneClickEnvsOrthrow();
 
     const response = await fetch(
       `${apiURL}/1-click/${uuid}${code ? `?code=${code}` : ''}`,
@@ -76,7 +102,12 @@ async function getOneClick(req: NextApiRequest, res: NextApiResponse) {
           Authorization: apiKey,
         },
       },
-    ).then((response) => response.json());
+    ).then((response) => response.json() as Promise<OneClickGetResponse>);
+
+    // Mask the SSN before sending it to the client side
+    if ('credentials' in response) {
+      maskSSN(response);
+    }
 
     return res.status(200).json(response);
   } catch (error: any) {
@@ -84,5 +115,18 @@ async function getOneClick(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({
       message: error.message || 'Failed to get 1-click. Try again later',
     });
+  }
+}
+
+/**
+ * Masks the SSN of a OneClickEntity
+ * It's important to mask the SSN before sending it to the client side
+ * Once the user submits the form, you will need to call the 1-click API GET to get the unmasked version of SSN again
+ */
+function maskSSN(oneClickEntity: OneClickEntity) {
+  if (oneClickEntity.credentials.ssn) {
+    oneClickEntity.credentials.ssn = ssnFormatter(
+      oneClickEntity.credentials.ssn,
+    );
   }
 }

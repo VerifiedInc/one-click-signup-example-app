@@ -134,6 +134,7 @@ function OneClickNonHosted() {
     }
 
     setStep(Steps.OTP);
+    console.log('Enter the otp: 111111');
   };
 
   const updateSnackbarMessage = (message: string, isError = false) => {

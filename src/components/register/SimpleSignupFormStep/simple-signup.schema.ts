@@ -1,6 +1,6 @@
+import { SSNSchema } from '@/utils/ssn';
 import {
   fieldSchema,
-  SSNSchema,
   stateSchema,
 } from '@verifiedinc/shared-ui-elements/validations';
 import * as z from 'zod';

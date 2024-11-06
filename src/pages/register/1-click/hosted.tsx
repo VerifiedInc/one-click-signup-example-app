@@ -16,11 +16,10 @@ import { OneClickPostResponse } from '@/types/OneClick.types';
 import { Alert, Container, Portal, Snackbar } from '@mui/material';
 import { When } from '@verifiedinc/shared-ui-elements/components';
 import { useDisclosure } from '@verifiedinc/shared-ui-elements/hooks';
-import { redirect } from 'next/navigation';
 
+import LoadingSpinner from '@/components/UI/LoadingSpinner';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import LoadingSpinner from '@/components/UI/LoadingSpinner';
 
 // Has all the steps for the registration process
 // The components will be rendered according the step state
@@ -44,17 +43,17 @@ function OneClickHosted() {
   // Function to call the one click post endpoint
   // It is called when the user finishes typing the phone number
   // It will redirect the user to the web wallet where the user will finish the registration
-  // If the NEXT_PUBLIC_BASE_URL is set, the user will be redirected back to this page once the registration is done
+  // If the NEXT_PUBLIC_REDIRECT_URL is set, the user will be redirected back to this page once the registration is done
   // Otherwise, the user will be redirected to the brand's default redirect url
   const handleValidPhone = async (phone: string) => {
     setIsLoading(true);
 
-    const redirectUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL;
     const response: OneClickPostResponse = await postOneClick({
       phone,
       content: { title: 'Signup', description: 'Register to Slooow' },
       redirectUrl: redirectUrl
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/register/1-click/hosted`
+        ? `${process.env.NEXT_PUBLIC_REDIRECT_URL}/register/1-click/hosted`
         : undefined,
     });
     console.log(response);
