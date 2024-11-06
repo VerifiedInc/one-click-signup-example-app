@@ -21,31 +21,40 @@ export default function OtpStep({
   isLoading,
 }: OtpStepProps): ReactNode {
   const oneClickSignupSubmitInputRef = useRef<OTPInputInstance | null>(null);
-
-  // State to trigger re-render of otp input
-  const [refresh, setRefresh] = useState(false);
-
-  const handleClear = () => {
-    setRefresh((prev) => !prev); // Toggle state to trigger re-render
-  };
-
+  const [isDisabled, setIsDisabled] = useState<boolean | null>(null);
   const handleValidateOtp = async (otpCode: string) => {
     onValidate(otpCode);
-    handleClear();
   };
 
-  // Clear the input when the refresh state changes
-  // Necessary to make sure the clear will trigger a re-render
-  useEffect(() => {
-    oneClickSignupSubmitInputRef.current?.clear(); // Clear the input
-  }, [refresh]);
+  // This function will update the isDisabled state and clear the otp input
+  // It's called when the isLoading state changes
+  // It has a delay to do the clear action so the user can see the last inputed digit
+  const updateDisableStateAndClearOtp = () => {
+    // If the isLoading state is true, we disable the input right away
+    if (isLoading) setIsDisabled(true);
+
+    // If the isLoading state is false we add a delay to clear the input
+    // the check isDisabled !== null is to avoid the input to be cleared when the component is mounted
+    if (
+      isDisabled !== null &&
+      !isLoading &&
+      oneClickSignupSubmitInputRef.current
+    ) {
+      setTimeout(() => {
+        oneClickSignupSubmitInputRef.current.clear();
+        setIsDisabled(false);
+      }, 1000);
+    }
+  };
+
+  useEffect(updateDisableStateAndClearOtp, [isLoading]);
 
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
         <OTPInput
+          disabled={!!isDisabled}
           ref={oneClickSignupSubmitInputRef}
-          disabled={isLoading}
           onChange={(event: any) => {
             handleValidateOtp(event.target.value);
           }}
@@ -54,9 +63,8 @@ export default function OtpStep({
 
       <ResendPhoneBanner
         phone={phone}
-        disabled={isLoading}
+        disabled={!!isDisabled}
         onClick={() => {
-          oneClickSignupSubmitInputRef.current?.clear();
           onRetryResendOtp(phone);
         }}
       />

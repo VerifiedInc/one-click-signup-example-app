@@ -185,7 +185,7 @@ function OneClickSemiHosted() {
           </PhoneStep>
         </When>
 
-        <When value={!!phone && step === Steps.OTP}>
+        <When value={step === Steps.OTP}>
           <OtpStep
             phone={phone}
             onRetryResendOtp={handleRetryResendOtp}
