@@ -1,6 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Stack, TextField } from '@mui/material';
-import { Button, SSNInput } from '@verifiedinc/shared-ui-elements/components';
+import {
+  Button,
+  SSNInput,
+} from '@verifiedinc-public/shared-ui-elements/components';
 import { ReactNode } from 'react';
 
 import { DatePicker } from '@mui/x-date-pickers';

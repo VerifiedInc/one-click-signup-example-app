@@ -1,5 +1,5 @@
 import { Lato } from 'next/font/google';
-import { theme as sharedTheme } from '@verifiedinc/shared-ui-elements/styles';
+import { theme as sharedTheme } from '@verifiedinc-public/shared-ui-elements/styles';
 
 declare module '@mui/material/styles' {
   // custom palette

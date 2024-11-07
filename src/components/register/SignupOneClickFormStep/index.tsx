@@ -5,12 +5,12 @@ import {
   SelectInput,
   SSNInput,
   When,
-} from '@verifiedinc/shared-ui-elements/components';
+} from '@verifiedinc-public/shared-ui-elements/components';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 
 import { OneClickCredentials } from '@/types/OneClick.types';
 import { DatePicker } from '@mui/x-date-pickers';
-import { formatDateMMDDYYYY } from '@verifiedinc/shared-ui-elements/utils';
+import { formatDateMMDDYYYY } from '@verifiedinc-public/shared-ui-elements/utils';
 import dayjs from 'dayjs';
 import { Controller, useForm } from 'react-hook-form';
 import {

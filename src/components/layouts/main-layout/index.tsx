@@ -6,7 +6,7 @@ import {
   Toolbar,
   useTheme,
 } from '@mui/material';
-import { Typography } from '@verifiedinc/shared-ui-elements/components';
+import { Typography } from '@verifiedinc-public/shared-ui-elements/components';
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 
