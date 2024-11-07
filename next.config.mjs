@@ -2,7 +2,6 @@
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
-  transpilePackages: ['@verifiedinc/shared-ui-elements'],
 
   async headers() {
     return [

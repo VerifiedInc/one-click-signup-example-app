@@ -2,8 +2,8 @@ import { SxProps, useTheme } from '@mui/material';
 import {
   Button,
   FullWidthAlert,
-} from '@verifiedinc/shared-ui-elements/components';
-import { parseToPhoneNational } from '@verifiedinc/shared-ui-elements/utils';
+} from '@verifiedinc-public/shared-ui-elements/components';
+import { parseToPhoneNational } from '@verifiedinc-public/shared-ui-elements/utils';
 
 interface ResendPhoneBannerProps {
   phone: string;
