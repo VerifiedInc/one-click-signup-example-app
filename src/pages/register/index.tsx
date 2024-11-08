@@ -14,8 +14,7 @@ import SimpleSignupFormStep from '@/components/register/SimpleSignupFormStep';
 import { SimpleSignupForm } from '@/components/register/SimpleSignupFormStep/simple-signup.schema';
 import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
 import { Alert, Container, Portal, Snackbar } from '@mui/material';
-import { When } from '@verifiedinc-public/shared-ui-elements/components';
-import { useDisclosure } from '@verifiedinc-public/shared-ui-elements/hooks';
+import { When, useDisclosure } from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 

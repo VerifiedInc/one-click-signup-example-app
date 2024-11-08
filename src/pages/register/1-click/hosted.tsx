@@ -14,8 +14,7 @@ import {
 } from '@/services/client/one-click-request-service';
 import { OneClickPostResponse } from '@/types/OneClick.types';
 import { Alert, Container, Portal, Snackbar } from '@mui/material';
-import { When } from '@verifiedinc-public/shared-ui-elements/components';
-import { useDisclosure } from '@verifiedinc-public/shared-ui-elements/hooks';
+import { When, useDisclosure } from '@verifiedinc-public/shared-ui-elements';
 
 import LoadingSpinner from '@/components/UI/LoadingSpinner';
 import { useRouter } from 'next/router';

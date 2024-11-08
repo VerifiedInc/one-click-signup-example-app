@@ -28,7 +28,7 @@
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@mui/x-date-pickers": "^7.22.1",
-    "@verifiedinc-public/shared-ui-elements": "^0.11.6",
+    "@verifiedinc-public/shared-ui-elements": "^0.12.0",
     "dayjs": "^1.11.13",
     "framer-motion": "^11.11.0",
     "fs": "^0.0.1-security",

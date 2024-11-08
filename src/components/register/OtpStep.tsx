@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import {
   OTPInput,
   OTPInputInstance,
-} from '@verifiedinc-public/shared-ui-elements/components';
+} from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ResendPhoneBanner } from './ResendPhoneBanner';
 

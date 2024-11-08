@@ -2,7 +2,7 @@ import { SSNSchema } from '@/utils/ssn';
 import {
   fieldSchema,
   stateSchema,
-} from '@verifiedinc-public/shared-ui-elements/validations';
+} from '@verifiedinc-public/shared-ui-elements';
 import * as z from 'zod';
 
 export const signupOneClickFormSchema = z.object({
