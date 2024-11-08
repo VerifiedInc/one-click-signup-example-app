@@ -7,9 +7,10 @@ import React from 'react';
 interface MenuItemProps {
   label: string;
   path: string;
+  onClick: () => void;
 }
 
-function MenuItem({ label, path }: MenuItemProps): ReactNode {
+function MenuItem({ label, path, onClick }: MenuItemProps): ReactNode {
   const theme = useTheme();
   const router = useRouter();
 
@@ -24,7 +25,7 @@ function MenuItem({ label, path }: MenuItemProps): ReactNode {
   // Prevent unnecessary re-renders when props don't change
   return (
     <MuiMenuItem
-      onClick={() => router.push(path)}
+      onClick={onClick}
       data-testid={`main-layout-menu-item-${label}`}
     >
       <ListItemText sx={menuItemStyling}>{label}</ListItemText>

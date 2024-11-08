@@ -12,6 +12,7 @@ import SignupOneClickFormStep from '@/components/register/SignupOneClickFormStep
 import { SignupOneClickForm } from '@/components/register/SignupOneClickFormStep/signup-one-click.schema';
 import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
 import LegalLanguage from '@/components/UI/LegalLanguage';
+import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
 import {
   getOneClick,
   patchOneClick,
@@ -22,8 +23,8 @@ import {
   OneClickErrorEnum,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
-import { Alert, Container, Portal, Snackbar } from '@mui/material';
-import { useDisclosure, When } from '@verifiedinc-public/shared-ui-elements';
+import { Container } from '@mui/material';
+import { When } from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -51,12 +52,10 @@ function OneClickSemiHosted() {
     null,
   );
   const [otp, setOtp] = useState<string>();
-  const disclosure = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState({
-    message: '',
-    isError: true,
-  });
+
+  // Snackbar hook to manage snackbar messages
+  const { disclosure, snackbarOptions, updateSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -69,15 +68,27 @@ function OneClickSemiHosted() {
 
     const response: OneClickPostResponse = await postOneClick({ phone });
     if ('uuid' in response) {
-      console.log('Enter the otp: ', response.code);
+      const otp = response?.code as string;
+      updateSnackbar({
+        message: `OTP code: ${otp}`,
+        severity: 'info',
+        position: 'right',
+        onCopyClick: () => {
+          navigator.clipboard.writeText(otp);
+          updateSnackbar({ message: 'OTP code copied to clipboard' });
+        },
+      });
       setOtp(response.code);
       setOneClickPostUuid(response.uuid);
       setStep(Steps.OTP);
     } else {
-      updateSnackbarMessage(
-        'data' in response ? response.message : 'An unexpected error happened',
-        true,
-      );
+      updateSnackbar({
+        message:
+          'data' in response
+            ? response.message
+            : 'An unexpected error happened',
+        severity: 'error',
+      });
     }
 
     setIsLoading(false);
@@ -106,10 +117,13 @@ function OneClickSemiHosted() {
     ) {
       setStep(Steps.DOB);
     } else {
-      updateSnackbarMessage(
-        'data' in response ? response.message : 'An unexpected error happened',
-        true,
-      );
+      updateSnackbar({
+        message:
+          'data' in response
+            ? response.message
+            : 'An unexpected error happened',
+        severity: 'error',
+      });
     }
     setIsLoading(false);
   };
@@ -129,10 +143,13 @@ function OneClickSemiHosted() {
       console.log(response?.credentials);
       setStep(Steps.FORM);
     } else {
-      updateSnackbarMessage(
-        'data' in response ? response.message : 'An unexpected error happened',
-        true,
-      );
+      updateSnackbar({
+        message:
+          'data' in response
+            ? response.message
+            : 'An unexpected error happened',
+        severity: 'error',
+      });
     }
 
     setIsLoading(false);
@@ -155,16 +172,17 @@ function OneClickSemiHosted() {
   const resendSms = async (phone: string) => {
     const response = await requestSendSms({ phone, otp: otp as string });
     if (response.error) {
-      updateSnackbarMessage(response.error, true);
+      updateSnackbar({
+        message: response.error,
+        severity: 'error',
+      });
       return;
     }
-    updateSnackbarMessage('Sms sent successfully');
-    setStep(Steps.OTP);
-  };
 
-  const updateSnackbarMessage = (message: string, isError = false) => {
-    setSnackbarMessage({ message, isError });
-    disclosure.onOpen();
+    updateSnackbar({
+      message: 'SMS sent successfully',
+    });
+    setStep(Steps.OTP);
   };
 
   // Function to reload the page
@@ -210,13 +228,7 @@ function OneClickSemiHosted() {
           <SuccessfulSignUpStep onSignOut={reset} />
         </When>
       </Container>
-      <Portal>
-        <Snackbar open={disclosure.open} onClose={disclosure.onClose}>
-          <Alert severity={snackbarMessage.isError ? 'error' : 'success'}>
-            {snackbarMessage.message}
-          </Alert>
-        </Snackbar>
-      </Portal>
+      <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
     </>
   );
 }
