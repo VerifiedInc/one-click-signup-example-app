@@ -1,4 +1,4 @@
-import { getUnixSchema } from '@verifiedinc-public/shared-ui-elements/validations';
+import { getUnixSchema } from '@verifiedinc-public/shared-ui-elements';
 import * as z from 'zod';
 
 export const dobFormSchema = z.object({

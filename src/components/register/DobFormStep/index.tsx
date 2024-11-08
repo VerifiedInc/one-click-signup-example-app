@@ -4,7 +4,7 @@ import {
   DateInput,
   Image,
   Typography,
-} from '@verifiedinc-public/shared-ui-elements/components';
+} from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { DobForm, dobFormSchema } from './dob.schema';

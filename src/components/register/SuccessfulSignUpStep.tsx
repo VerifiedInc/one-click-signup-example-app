@@ -1,5 +1,5 @@
 import { Button, Stack, Typography, useTheme } from '@mui/material';
-import { VerifiedImage } from '@verifiedinc-public/shared-ui-elements/components';
+import { VerifiedImage } from '@verifiedinc-public/shared-ui-elements';
 
 interface SuccessfulSignUpStepProps {
   onSignOut: () => void;

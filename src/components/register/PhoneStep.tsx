@@ -3,7 +3,7 @@ import {
   PhoneInput,
   Typography,
   Image,
-} from '@verifiedinc-public/shared-ui-elements/components';
+} from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode } from 'react';
 
 interface PhoneStepProps {
