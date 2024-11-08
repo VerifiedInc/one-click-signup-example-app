@@ -13,8 +13,9 @@ import PhoneStep from '@/components/register/PhoneStep';
 import SimpleSignupFormStep from '@/components/register/SimpleSignupFormStep';
 import { SimpleSignupForm } from '@/components/register/SimpleSignupFormStep/simple-signup.schema';
 import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
-import { Alert, Container, Portal, Snackbar } from '@mui/material';
-import { When, useDisclosure } from '@verifiedinc-public/shared-ui-elements';
+import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
+import { Container } from '@mui/material';
+import { When } from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -31,12 +32,10 @@ function Register() {
   const [step, setStep] = useState(Steps.PHONE);
   const [isLoading, setIsLoading] = useState(false);
   const [phone, setPhone] = useState('');
-  // This controls whether the snackbar is visible or not
-  const disclosure = useDisclosure();
-  const [snackbarMessage, setSnackbarMessage] = useState({
-    message: '',
-    isError: true,
-  });
+
+  // Snackbar hook to manage snackbar messages
+  const { disclosure, snackbarOptions, updateSnackbar } = useSnackbar();
+
   const router = useRouter();
 
   // Function to handle the generation of the otp code and send the sms
@@ -45,9 +44,18 @@ function Register() {
     const response = await requestGenerateOtpAndSendSms({ phone });
 
     if (response?.error) {
-      updateSnackbarMessage(response.error, true);
+      updateSnackbar({ message: response.error, severity: 'error' });
     } else {
-      console.log('Enter the otp: 111111');
+      const otp = response?.otp || '111111';
+      updateSnackbar({
+        message: `OTP code: ${otp}`,
+        severity: 'info',
+        position: 'right',
+        onCopyClick: () => {
+          navigator.clipboard.writeText(otp);
+          updateSnackbar({ message: 'OTP code copied to clipboard' });
+        },
+      });
       setPhone(phone);
       setStep(Steps.OTP);
     }
@@ -59,7 +67,10 @@ function Register() {
     setIsLoading(true);
     const otpResponse = await requestValidateOtp({ otpCode, phone });
     if (otpResponse?.error) {
-      updateSnackbarMessage(`${otpResponse.error}: ${otpCode}`, true);
+      updateSnackbar({
+        message: `${otpResponse.error}: ${otpCode}`,
+        severity: 'error',
+      });
     } else {
       setStep(Steps.FORM);
     }
@@ -70,7 +81,9 @@ function Register() {
   // It is called when the user clicks on the resend otp button
   const handleRetryResendOtp = (phone: string) => {
     handleGenerateOtpAndSendSms(phone);
-    updateSnackbarMessage('Sms sent successfully');
+    updateSnackbar({
+      message: `SMS sent successfully`,
+    });
   };
 
   // Function to handle the register form submit
@@ -82,12 +95,6 @@ function Register() {
   // Function to reload the page
   const reset = () => {
     router.reload();
-  };
-
-  // Function to update the snackbar
-  const updateSnackbarMessage = (message: string, isError = false) => {
-    setSnackbarMessage({ message, isError });
-    disclosure.onOpen();
   };
 
   // This will render the components according to the step state
@@ -119,13 +126,7 @@ function Register() {
           <SuccessfulSignUpStep onSignOut={reset} />
         </When>
       </Container>
-      <Portal>
-        <Snackbar open={disclosure.open} onClose={disclosure.onClose}>
-          <Alert severity={snackbarMessage.isError ? 'error' : 'success'}>
-            {snackbarMessage.message}
-          </Alert>
-        </Snackbar>
-      </Portal>
+      <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
     </>
   );
 }

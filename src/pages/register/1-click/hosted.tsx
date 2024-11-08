@@ -13,29 +13,30 @@ import {
   postOneClick,
 } from '@/services/client/one-click-request-service';
 import { OneClickPostResponse } from '@/types/OneClick.types';
-import { Alert, Container, Portal, Snackbar } from '@mui/material';
-import { When, useDisclosure } from '@verifiedinc-public/shared-ui-elements';
+import { Container } from '@mui/material';
+import { When } from '@verifiedinc-public/shared-ui-elements';
 
 import LoadingSpinner from '@/components/UI/LoadingSpinner';
+import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import RedirectStep from '@/components/register/RedirectStep';
 
 // Has all the steps for the registration process
 // The components will be rendered according the step state
 enum Steps {
   LOADING = 1,
   PHONE = 2,
-  SUCCESS = 3,
+  REDIRECT = 3,
+  SUCCESS = 4,
 }
 
 function OneClickHosted() {
   const [step, setStep] = useState(Steps.LOADING);
-  const disclosure = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState({
-    message: '',
-    isError: true,
-  });
+
+  // Snackbar hook to manage snackbar messages
+  const { disclosure, snackbarOptions, updateSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -63,10 +64,13 @@ function OneClickHosted() {
         response.url as string,
       );
     } else {
-      updateSnackbarMessage(
-        'data' in response ? response.message : 'An unexpected error happened',
-        true,
-      );
+      updateSnackbar({
+        message:
+          'data' in response
+            ? response.message
+            : 'An unexpected error happened',
+        severity: 'error',
+      });
       setIsLoading(false);
     }
   };
@@ -79,11 +83,23 @@ function OneClickHosted() {
   ): Promise<void> => {
     const response = await requestSendSms({ phone, otp: otp as string });
     if (response.error) {
-      updateSnackbarMessage(response.error, true);
+      updateSnackbar({
+        message: response.error,
+        severity: 'error',
+      });
       setIsLoading(false);
     } else {
-      updateSnackbarMessage('Sms sent, redirecting to Wallet');
-      router.push(url);
+      setStep(Steps.REDIRECT);
+      updateSnackbar({
+        message: `OTP code: ${otp}`,
+        severity: 'info',
+        position: 'right',
+        onCopyClick: () => {
+          navigator.clipboard.writeText(otp);
+          updateSnackbar({ message: 'OTP code copied to clipboard' });
+        },
+      });
+      setTimeout(() => router.push(url), 8000);
     }
   };
 
@@ -96,19 +112,14 @@ function OneClickHosted() {
     if ('credentials' in response) {
       setStep(Steps.SUCCESS);
     } else {
-      updateSnackbarMessage(
-        "We couldn't find your identity. Please try again.",
-        true,
-      );
+      updateSnackbar({
+        message: "We couldn't find your identity. Please try again.",
+        severity: 'error',
+      });
       setStep(Steps.PHONE);
     }
 
     setIsLoading(false);
-  };
-
-  const updateSnackbarMessage = (message: string, isError = false) => {
-    setSnackbarMessage({ message, isError });
-    disclosure.onOpen();
   };
 
   const reset = () => {
@@ -154,13 +165,10 @@ function OneClickHosted() {
             <SuccessfulSignUpStep onSignOut={reset} />
           </When>
         </When>
-        <Portal>
-          <Snackbar open={disclosure.open} onClose={disclosure.onClose}>
-            <Alert severity={snackbarMessage.isError ? 'error' : 'success'}>
-              {snackbarMessage.message}
-            </Alert>
-          </Snackbar>
-        </Portal>
+        <When value={step === Steps.REDIRECT}>
+          <RedirectStep />
+        </When>
+        <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
       </Container>
     </>
   );

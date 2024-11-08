@@ -24,7 +24,10 @@ export const requestValidateOtp = async (payload: {
 // You can see the implementation in src/pages/api/generate-otp-and-send-sms.ts
 export const requestGenerateOtpAndSendSms = async (payload: {
   phone: string;
-}): Promise<{ error?: string }> => {
+}): Promise<{
+  otp: string;
+  error?: string;
+}> => {
   return fetch('/api/generate-otp-and-send-sms', {
     method: 'POST',
     body: JSON.stringify(payload),

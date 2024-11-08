@@ -15,14 +15,15 @@ import SignupOneClickFormStep from '@/components/register/SignupOneClickFormStep
 import { SignupOneClickForm } from '@/components/register/SignupOneClickFormStep/signup-one-click.schema';
 import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
 import LegalLanguage from '@/components/UI/LegalLanguage';
+import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
 import { postOneClick } from '@/services/client/one-click-request-service';
 import {
   OneClickCredentials,
   OneClickErrorEnum,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
-import { Alert, Container, Portal, Snackbar } from '@mui/material';
-import { useDisclosure, When } from '@verifiedinc-public/shared-ui-elements';
+import { Container } from '@mui/material';
+import { When } from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -40,15 +41,13 @@ function OneClickNonHosted() {
   // First step is the phone number form
   const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
-  const disclosure = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const [credentials, setCredentials] = useState<OneClickCredentials | null>(
     null,
   );
-  const [snackbarMessage, setSnackbarMessage] = useState({
-    message: '',
-    isError: true,
-  });
+
+  // Snackbar hook to manage snackbar messages
+  const { disclosure, snackbarOptions, updateSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -68,7 +67,10 @@ function OneClickNonHosted() {
 
     const otpResponse = await requestValidateOtp({ otpCode, phone });
     if (otpResponse?.error) {
-      updateSnackbarMessage(`${otpResponse.error}: ${otpCode}`, true);
+      updateSnackbar({
+        message: `${otpResponse.error}: ${otpCode}`,
+        severity: 'error',
+      });
       setIsLoading(false);
       return;
     }
@@ -87,10 +89,13 @@ function OneClickNonHosted() {
     ) {
       setStep(Steps.DOB);
     } else {
-      updateSnackbarMessage(
-        'data' in response ? response.message : 'An unexpected error happened',
-        true,
-      );
+      updateSnackbar({
+        message:
+          'data' in response
+            ? response.message
+            : 'An unexpected error happened',
+        severity: 'error',
+      });
     }
     setIsLoading(false);
   };
@@ -105,17 +110,22 @@ function OneClickNonHosted() {
       setCredentials(response?.identity?.credentials ?? null);
       setStep(Steps.FORM);
     } else {
-      updateSnackbarMessage(
-        'data' in response ? response.message : 'An unexpected error happened',
-        true,
-      );
+      updateSnackbar({
+        message:
+          'data' in response
+            ? response.message
+            : 'An unexpected error happened',
+        severity: 'error',
+      });
     }
 
     setIsLoading(false);
   };
 
   const handleRetryResendOtp = (phone: string) => {
-    updateSnackbarMessage('Sms sent successfully');
+    updateSnackbar({
+      message: `SMS sent successfully`,
+    });
     generateOtp(phone);
   };
 
@@ -128,17 +138,22 @@ function OneClickNonHosted() {
   const generateOtp = async (phone: string) => {
     const response = await requestGenerateOtpAndSendSms({ phone });
     if (response.error) {
-      updateSnackbarMessage(response.error, true);
+      updateSnackbar({ message: response.error, severity: 'error' });
       return;
     }
 
-    setStep(Steps.OTP);
-    console.log('Enter the otp: 111111');
-  };
+    const otp = response?.otp || '111111';
+    updateSnackbar({
+      message: `OTP code: ${otp}`,
+      severity: 'info',
+      position: 'right',
+      onCopyClick: () => {
+        navigator.clipboard.writeText(otp);
+        updateSnackbar({ message: 'OTP code copied to clipboard' });
+      },
+    });
 
-  const updateSnackbarMessage = (message: string, isError = false) => {
-    setSnackbarMessage({ message, isError });
-    disclosure.onOpen();
+    setStep(Steps.OTP);
   };
 
   const reset = () => {
@@ -182,13 +197,7 @@ function OneClickNonHosted() {
           <SuccessfulSignUpStep onSignOut={reset} />
         </When>
       </Container>
-      <Portal>
-        <Snackbar open={disclosure.open} onClose={disclosure.onClose}>
-          <Alert severity={snackbarMessage.isError ? 'error' : 'success'}>
-            {snackbarMessage.message}
-          </Alert>
-        </Snackbar>
-      </Portal>
+      <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
     </>
   );
 }

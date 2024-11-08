@@ -14,12 +14,27 @@ import { IconPlayer } from '@/components/UI/IconPlayer';
 import MenuItem from './MenuItem';
 import { styles } from './mainLayout.styles';
 import { useRouter } from 'next/router';
+import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
 
 function Menubar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const router = useRouter();
+
+  // Snackbar hook to manage snackbar messages
+  const { disclosure, snackbarOptions, updateSnackbar } = useSnackbar();
+
+  const onMenuClick = (path: string) => {
+    router.push(path);
+    setAnchorEl(null);
+    updateSnackbar({
+      message: 'Do not forget to change your integration type in the dashboard',
+      severity: 'warning',
+      position: 'right',
+    });
+  };
+
   return (
     <Toolbar sx={styles.toolbar}>
       <Stack
@@ -77,17 +92,28 @@ function Menubar() {
           }}
           disableScrollLock
         >
-          <MenuItem label='Without 1-click' path='/register' />
+          <MenuItem
+            label='Without 1-click'
+            path='/register'
+            onClick={() => onMenuClick('/register')}
+          />
           <MenuItem
             label='1-click Non-Hosted'
             path='/register/1-click/non-hosted'
+            onClick={() => onMenuClick('/register/1-click/non-hosted')}
           />
           <MenuItem
             label='1-click Semi-Hosted'
             path='/register/1-click/semi-hosted'
+            onClick={() => onMenuClick('/register/1-click/semi-hosted')}
           />
-          <MenuItem label='1-click Hosted' path='/register/1-click/hosted' />
+          <MenuItem
+            label='1-click Hosted'
+            path='/register/1-click/hosted'
+            onClick={() => onMenuClick('/register/1-click/hosted')}
+          />
         </Menu>
+        <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
       </Stack>
     </Toolbar>
   );
