@@ -1,7 +1,10 @@
 import {
+  Box,
   Container,
+  Divider,
   IconButton,
   Menu,
+  MenuList,
   Stack,
   Toolbar,
   useTheme,
@@ -93,24 +96,34 @@ function Menubar() {
           disableScrollLock
         >
           <MenuItem
-            label='Without 1-click'
-            path='/register'
-            onClick={() => onMenuClick('/register')}
+            label='Manual Signup'
+            path='/signup'
+            onClick={() => onMenuClick('/signup')}
+          />
+          <Box sx={{ py: 1 }}>
+            <Divider />
+            <Typography
+              variant='subtitle2'
+              sx={{ ml: 2, mt: 1, color: 'text.secondary' }}
+            >
+              1-click Signup
+            </Typography>
+          </Box>
+
+          <MenuItem
+            label='Non-Hosted'
+            path='/signup/1-click/non-hosted'
+            onClick={() => onMenuClick('/signup/1-click/non-hosted')}
           />
           <MenuItem
-            label='1-click Non-Hosted'
-            path='/register/1-click/non-hosted'
-            onClick={() => onMenuClick('/register/1-click/non-hosted')}
+            label='Semi-Hosted'
+            path='/signup/1-click/semi-hosted'
+            onClick={() => onMenuClick('/signup/1-click/semi-hosted')}
           />
           <MenuItem
-            label='1-click Semi-Hosted'
-            path='/register/1-click/semi-hosted'
-            onClick={() => onMenuClick('/register/1-click/semi-hosted')}
-          />
-          <MenuItem
-            label='1-click Hosted'
-            path='/register/1-click/hosted'
-            onClick={() => onMenuClick('/register/1-click/hosted')}
+            label='Hosted'
+            path='/signup/1-click/hosted'
+            onClick={() => onMenuClick('/signup/1-click/hosted')}
           />
         </Menu>
         <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
