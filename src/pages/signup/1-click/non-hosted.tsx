@@ -162,9 +162,9 @@ function OneClickNonHosted() {
 
   return (
     <>
-      <Head page='Register' />
+      <Head page='Signup' />
       <PageHeader
-        title='Register with 1-click Non-Hosted'
+        title='Signup with 1-click Non-Hosted'
         description="It's Slooow, but not slow"
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>

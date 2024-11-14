@@ -5,7 +5,7 @@ import { MainLayout } from '@/components/layouts/main-layout';
 function StarterApp() {
   const router = useRouter();
 
-  router.push('/register');
+  router.push('/signup');
 
   return null;
 }

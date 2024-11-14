@@ -27,7 +27,7 @@ enum Steps {
   FORM = 3,
   SUCCESS = 4,
 }
-function Register() {
+function Signup() {
   // First step is the phone number form
   const [step, setStep] = useState(Steps.PHONE);
   const [isLoading, setIsLoading] = useState(false);
@@ -100,9 +100,9 @@ function Register() {
   // This will render the components according to the step state
   return (
     <>
-      <Head page='Register' />
+      <Head page='Signup' />
       <PageHeader
-        title='Register without 1-click'
+        title='Signup without 1-click'
         description='This might be Slooow'
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>
@@ -131,6 +131,6 @@ function Register() {
   );
 }
 // This will add the layout to the page
-Register.getLayout = MainLayout;
+Signup.getLayout = MainLayout;
 
-export default Register;
+export default Signup;

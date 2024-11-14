@@ -51,7 +51,7 @@ function OneClickHosted() {
     const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL;
     const response: OneClickPostResponse = await postOneClick({
       phone,
-      content: { title: 'Signup', description: 'Register to Slooow' },
+      content: { title: 'Signup', description: 'Signup to Slooow' },
       redirectUrl: redirectUrl
         ? `${process.env.NEXT_PUBLIC_REDIRECT_URL}/register/1-click/hosted`
         : undefined,
@@ -145,10 +145,10 @@ function OneClickHosted() {
 
   return (
     <>
-      <Head page='Register' />
+      <Head page='Signup' />
 
       <PageHeader
-        title='1-click Hosted Register'
+        title='1-click Hosted Signup'
         description="It's Slooow, but not slow"
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>

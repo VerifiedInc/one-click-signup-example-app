@@ -46,10 +46,10 @@ Once the project is running, you can switch between the different integration fl
 
 You can also access the paths for each integration on the browser:
 
-1. Without 1-Click Integration -> [/register](http://localhost:3061/register)
-2. 1-Click Hosted -> [/register/1-click/hosted](http://localhost:3061/register/1-click/hosted)
-3. 1-Click Semi-Hosted -> [/register/1-click/semi-hosted](http://localhost:3061/register/1-click/semi-hosted)
-4. 1-Click Non-Hosted -> [/register/1-click/non-hosted](http://localhost:3061/register/1-click/non-hosted)
+1. Without 1-Click Integration -> [/signup](http://localhost:3061/signup)
+2. 1-Click Hosted -> [/signup/1-click/hosted](http://localhost:3061/signup/1-click/hosted)
+3. 1-Click Semi-Hosted -> [/signup/1-click/semi-hosted](http://localhost:3061/signup/1-click/semi-hosted)
+4. 1-Click Non-Hosted -> [/signup/1-click/non-hosted](http://localhost:3061/signup/1-click/non-hosted)
 
 When you reach the OTP form, the correct code will be logged in the browser console. Note: This is only for demonstration purposes—avoid logging sensitive information in real applications.
 
@@ -57,11 +57,11 @@ When you reach the OTP form, the correct code will be logged in the browser cons
 
 This project uses Next.js, combining a client-side frontend with a server-side API.
 
-If you’re new to Next.js, start by exploring the `src/pages/register directory` directory. Here, you’ll find pages for different registration integrations, each designed to guide you through the process.
+If you’re new to Next.js, start by exploring the `src/pages/signup directory` directory. Here, you’ll find pages for different registration integrations, each designed to guide you through the process.
 For example:
 
-1. `src/pages/register/index.tsx` – This page handles the registration flow without 1-click integration. A great starting point for understanding the basics.
-2. `src/pages/register/1-click/hosted.tsx` – This page is for the registration flow with the 1-click hosted integration.
+1. `src/pages/signup/index.tsx` – This page handles the registration flow without 1-click integration. A great starting point for understanding the basics.
+2. `src/pages/signup/1-click/hosted.tsx` – This page is for the registration flow with the 1-click hosted integration.
 
 See [Nextjs Pages docs](https://nextjs.org/docs/pages/building-your-application/routing/pages-and-layouts) for more details on the routing system.
 
