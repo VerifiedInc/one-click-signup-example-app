@@ -194,7 +194,7 @@ function OneClickSemiHosted() {
     <>
       <Head page='Signup' />
       <PageHeader
-        title='1-click Semi-Hosted Signup'
+        title='1-Click Semi-Hosted Signup'
         description="It's Slooow, but not slow"
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>

@@ -148,7 +148,7 @@ function OneClickHosted() {
       <Head page='Signup' />
 
       <PageHeader
-        title='1-click Hosted Signup'
+        title='1-Click Hosted Signup'
         description="It's Slooow, but not slow"
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>

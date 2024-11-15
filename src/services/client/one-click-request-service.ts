@@ -1,6 +1,6 @@
 /**
- * Make 1-click related requests to next API serverless functions
- * Once in the server side, we can then call the 1-click API to avoid exposing the API key
+ * Make 1-Click related requests to next API serverless functions
+ * Once in the server side, we can then call the 1-Click API to avoid exposing the API key
  * @see https://nextjs.org/docs/pages/building-your-application/routing/api-routes
  */
 
@@ -17,7 +17,7 @@ const headers = {
 };
 
 /**
- * Request to next API to do a POST 1-click request
+ * Request to next API to do a POST 1-Click request
  * @see https://docs.verified.inc/endpoints#post-1-click
  * You can see the implementation in src/pages/api/1-click/index.ts
  */
@@ -32,7 +32,7 @@ export const postOneClick = async (
 };
 
 /**
- * Request to next API to do a PATCH 1-click request
+ * Request to next API to do a PATCH 1-Click request
  * @see https://docs.verified.inc/endpoints#patch-1-click
  * You can see the implementation in src/pages/api/1-click/index.ts
  */
@@ -49,7 +49,7 @@ export const patchOneClick = async (
 
 /**
  *
- * Request to next API to a GET 1-click request
+ * Request to next API to a GET 1-Click request
  * @see https://docs.verified.inc/endpoints#get-1-click
  * You can see the implementation in src/pages/api/1-click/index.ts
  */

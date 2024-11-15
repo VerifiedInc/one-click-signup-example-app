@@ -1,6 +1,6 @@
 # 1-Click Integration Customer Guide App
 
-This project demonstrates a simple signup flow for a fictional brand, Slooow, using Verified’s 1-click integration in four different modes:
+This project demonstrates a simple signup flow for a fictional brand, Slooow, using Verified’s 1-Click integration in four different modes:
 
 1. Without 1-Click Integration
 2. 1-Click Hosted
@@ -9,7 +9,7 @@ This project demonstrates a simple signup flow for a fictional brand, Slooow, us
 
 ## Purpose
 
-By running this project and reviewing the code for each integration flow, you’ll gain a practical guide to integrating your application with Verified’s 1-click solution.
+By running this project and reviewing the code for each integration flow, you’ll gain a practical guide to integrating your application with Verified’s 1-Click solution.
 
 ## Documentation
 
@@ -60,14 +60,14 @@ This project uses Next.js, combining a client-side frontend with a server-side A
 If you’re new to Next.js, start by exploring the `src/pages/signup directory` directory. Here, you’ll find pages for different registration integrations, each designed to guide you through the process.
 For example:
 
-1. `src/pages/signup/index.tsx` – This page handles the registration flow without 1-click integration. A great starting point for understanding the basics.
-2. `src/pages/signup/1-click/hosted.tsx` – This page is for the registration flow with the 1-click hosted integration.
+1. `src/pages/signup/index.tsx` – This page handles the registration flow without 1-Click integration. A great starting point for understanding the basics.
+2. `src/pages/signup/1-click/hosted.tsx` – This page is for the registration flow with the 1-Click hosted integration.
 
 See [Nextjs Pages docs](https://nextjs.org/docs/pages/building-your-application/routing/pages-and-layouts) for more details on the routing system.
 
 ## Setting Up Your Hosted Redirect URL for Local Development Testing
 
-To test the 1-click hosted integration locally, you’ll need to configure the `NEXT_PUBLIC_REDIRECT_URL` environment variable. If this variable is left empty, the hosted flow will default to the brand’s main redirect URL.
+To test the 1-Click hosted integration locally, you’ll need to configure the `NEXT_PUBLIC_REDIRECT_URL` environment variable. If this variable is left empty, the hosted flow will default to the brand’s main redirect URL.
 
 **Important**: Setting `http://localhost:3061` won’t work due to security restrictions. Instead, use a tunneling service like Ngrok or Localtunnel to create a secure, publicly accessible URL.
 

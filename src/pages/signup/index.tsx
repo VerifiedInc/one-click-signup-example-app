@@ -102,7 +102,7 @@ function Signup() {
     <>
       <Head page='Signup' />
       <PageHeader
-        title='Signup without 1-click'
+        title='Signup without 1-Click'
         description='This might be Slooow'
       />
       <Container maxWidth='xs' sx={{ py: 3 }}>

@@ -16,7 +16,7 @@ interface SimpleSignupFormStepProps {
 
 // This component is a form with all the fields needed to sign up
 // It uses the SimpleSignupForm schema to validate the form
-// It doesn't have any 1-click implementation to it
+// It doesn't have any 1-Click implementation to it
 export default function SimpleSignupFormStep({
   onSubmit,
 }: SimpleSignupFormStepProps): ReactNode {

@@ -106,7 +106,7 @@ function Menubar() {
               variant='subtitle2'
               sx={{ ml: 2, mt: 1, color: 'text.secondary' }}
             >
-              1-click Signup
+              1-Click Signup
             </Typography>
           </Box>
 

@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 /**
  * It accepts SSN in the format '•••-••-1900' or '123-45-6789'.
- * When dealing with masked SSN, in the backend you will need to call 1-click API GET to get the unmasked version of SSN again.
- * If this is the user input SSN there will be no need to call the 1-click API GET.
+ * When dealing with masked SSN, in the backend you will need to call 1-Click API GET to get the unmasked version of SSN again.
+ * If this is the user input SSN there will be no need to call the 1-Click API GET.
  */
 // SSN schema, unmasked validation regex were gathered from: https://uibakery.io/regex-library/ssn
 export const SSNSchema = z.string().refine(
