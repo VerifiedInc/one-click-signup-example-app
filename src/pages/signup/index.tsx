@@ -13,9 +13,10 @@ import PhoneStep from '@/components/signup/PhoneStep';
 import SimpleSignupFormStep from '@/components/signup/SimpleSignupFormStep';
 import { SimpleSignupForm } from '@/components/signup/SimpleSignupFormStep/simple-signup.schema';
 import SuccessfulSignUpStep from '@/components/signup/SuccessfulSignUpStep';
-import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
+
+import { showClipboardSnackbar } from '@/utils/snackbar';
 import { Container } from '@mui/material';
-import { When } from '@verifiedinc-public/shared-ui-elements';
+import { useSnackbar, When } from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -34,7 +35,7 @@ function Signup() {
   const [phone, setPhone] = useState('');
 
   // Snackbar hook to manage snackbar messages
-  const { disclosure, snackbarOptions, updateSnackbar } = useSnackbar();
+  const { closeSnackbar, updateSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -44,18 +45,10 @@ function Signup() {
     const response = await requestGenerateOtpAndSendSms({ phone });
 
     if (response?.error) {
-      updateSnackbar({ message: response.error, severity: 'error' });
+      updateSnackbar(response.error, 'error');
     } else {
       const otp = response?.otp || '111111';
-      updateSnackbar({
-        message: `Verification Code: ${otp}`,
-        severity: 'info',
-        position: 'right',
-        onCopyClick: () => {
-          navigator.clipboard.writeText(otp);
-          updateSnackbar({ message: 'Verification Code copied to clipboard' });
-        },
-      });
+      showClipboardSnackbar(otp, updateSnackbar, closeSnackbar);
       setPhone(phone);
       setStep(Steps.OTP);
     }
@@ -67,10 +60,7 @@ function Signup() {
     setIsLoading(true);
     const otpResponse = await requestValidateOtp({ otpCode, phone });
     if (otpResponse?.error) {
-      updateSnackbar({
-        message: `${otpResponse.error}: ${otpCode}`,
-        severity: 'error',
-      });
+      updateSnackbar(`${otpResponse.error}: ${otpCode}`, 'error');
     } else {
       setStep(Steps.FORM);
     }
@@ -81,9 +71,7 @@ function Signup() {
   // It is called when the user clicks on the resend otp button
   const handleRetryResendOtp = (phone: string) => {
     handleGenerateOtpAndSendSms(phone);
-    updateSnackbar({
-      message: `SMS sent successfully`,
-    });
+    updateSnackbar('SMS sent successfully');
   };
 
   // Function to handle the register form submit
@@ -123,7 +111,6 @@ function Signup() {
           <SuccessfulSignUpStep onSignOut={reset} />
         </When>
       </Container>
-      <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
     </>
   );
 }

@@ -9,7 +9,10 @@ import {
   Toolbar,
   useTheme,
 } from '@mui/material';
-import { Typography } from '@verifiedinc-public/shared-ui-elements';
+import {
+  Typography,
+  useSnackbar,
+} from '@verifiedinc-public/shared-ui-elements';
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 
@@ -17,7 +20,6 @@ import { IconPlayer } from '@/components/UI/IconPlayer';
 import MenuItem from './MenuItem';
 import { styles } from './mainLayout.styles';
 import { useRouter } from 'next/router';
-import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
 
 function Menubar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -26,16 +28,16 @@ function Menubar() {
   const router = useRouter();
 
   // Snackbar hook to manage snackbar messages
-  const { disclosure, snackbarOptions, updateSnackbar } = useSnackbar();
+  const { updateSnackbar, closeSnackbar } = useSnackbar();
 
   const onMenuClick = (path: string) => {
+    closeSnackbar();
     router.push(path);
     setAnchorEl(null);
-    updateSnackbar({
-      message: 'Do not forget to change your integration type in the dashboard',
-      severity: 'warning',
-      position: 'right',
-    });
+    updateSnackbar(
+      'Do not forget to change your integration type in the dashboard',
+      'warning',
+    );
   };
 
   return (
@@ -126,7 +128,6 @@ function Menubar() {
             onClick={() => onMenuClick('/signup/1-click/hosted')}
           />
         </Menu>
-        <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
       </Stack>
     </Toolbar>
   );

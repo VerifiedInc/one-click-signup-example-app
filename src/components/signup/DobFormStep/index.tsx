@@ -1,10 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Stack } from '@mui/material';
-import {
-  DateInput,
-  Image,
-  Typography,
-} from '@verifiedinc-public/shared-ui-elements';
+import { DateInput, Typography } from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { DobForm, dobFormSchema } from './dob.schema';
@@ -37,13 +33,6 @@ export default function DobFormStep({
 
   return (
     <Box>
-      <Image
-        src={'/slooow.png'}
-        alt={'logo'}
-        maxWidth='200px'
-        component='img'
-        sx={{ pb: 3 }}
-      />
       <Typography variant='h6' gutterBottom>
         Enter your Date of Birth
       </Typography>
