@@ -5,13 +5,13 @@ import { PageHeader } from '@/components/UI/PageHeader';
 
 import { requestSendSms } from '@/services/client/otp-request-service';
 
-import DobStep from '@/components/register/DobFormStep';
-import OtpStep from '@/components/register/OtpStep';
-import PhoneStep from '@/components/register/PhoneStep';
-import SignupOneClickFormStep from '@/components/register/SignupOneClickFormStep';
-import { SignupOneClickForm } from '@/components/register/SignupOneClickFormStep/signup-one-click.schema';
-import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
-import LegalLanguage from '@/components/UI/LegalLanguage';
+import DobStep from '@/components/signup/DobFormStep';
+import OtpStep from '@/components/signup/OtpStep';
+import PhoneStep from '@/components/signup/PhoneStep';
+import SignupOneClickFormStep from '@/components/signup/SignupOneClickFormStep';
+import { SignupOneClickForm } from '@/components/signup/SignupOneClickFormStep/signup-one-click.schema';
+import SuccessfulSignUpStep from '@/components/signup/SuccessfulSignUpStep';
+import LegalLanguage from '@/components/signup/LegalLanguage';
 import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
 import {
   getOneClick,
@@ -27,6 +27,7 @@ import { Container } from '@mui/material';
 import { When } from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { TestPhoneNumbersBanner } from '@/components/signup/TestPhoneNumbersBanner';
 
 // Has all the steps for the registration process
 // The components will be rendered according the step state
@@ -194,14 +195,15 @@ function OneClickSemiHosted() {
     <>
       <Head page='Signup' />
       <PageHeader
-        title='1-Click Semi-Hosted Signup'
-        description="It's Slooow, but not slow"
+        title='1-Click Signup'
+        subtitle='(Semi-Hosted)'
+        description='This is Slooow, but not slooow!'
       />
-      <Container maxWidth='xs' sx={{ py: 3 }}>
+      <Container maxWidth='xs'>
         <When value={step === Steps.PHONE}>
-          <PhoneStep onValidPhone={handleValidPhone} disabled={isLoading}>
-            <LegalLanguage />
-          </PhoneStep>
+          <PhoneStep onValidPhone={handleValidPhone} disabled={isLoading} />
+          <LegalLanguage />
+          <TestPhoneNumbersBanner />
         </When>
 
         <When value={step === Steps.OTP}>

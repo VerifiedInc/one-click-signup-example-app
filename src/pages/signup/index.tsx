@@ -8,11 +8,11 @@ import {
   requestValidateOtp,
 } from '@/services/client/otp-request-service';
 
-import OtpStep from '@/components/register/OtpStep';
-import PhoneStep from '@/components/register/PhoneStep';
-import SimpleSignupFormStep from '@/components/register/SimpleSignupFormStep';
-import { SimpleSignupForm } from '@/components/register/SimpleSignupFormStep/simple-signup.schema';
-import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
+import OtpStep from '@/components/signup/OtpStep';
+import PhoneStep from '@/components/signup/PhoneStep';
+import SimpleSignupFormStep from '@/components/signup/SimpleSignupFormStep';
+import { SimpleSignupForm } from '@/components/signup/SimpleSignupFormStep/simple-signup.schema';
+import SuccessfulSignUpStep from '@/components/signup/SuccessfulSignUpStep';
 import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
 import { Container } from '@mui/material';
 import { When } from '@verifiedinc-public/shared-ui-elements';
@@ -101,11 +101,8 @@ function Signup() {
   return (
     <>
       <Head page='Signup' />
-      <PageHeader
-        title='Signup without 1-Click'
-        description='This might be Slooow'
-      />
-      <Container maxWidth='xs' sx={{ py: 3 }}>
+      <PageHeader title='Manual Signup' description='This will be slooow...' />
+      <Container maxWidth='xs'>
         {/* This 'When' component conditionally renders it's children  */}
         <When value={step === Steps.PHONE}>
           <PhoneStep onValidPhone={handleGenerateOtpAndSendSms} />

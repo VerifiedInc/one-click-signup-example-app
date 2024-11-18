@@ -1,29 +1,40 @@
-import { Box, Typography } from '@mui/material';
-import { ReactNode } from 'react';
+import { Box, Stack, Typography } from '@mui/material';
+import { When, Image } from '@verifiedinc-public/shared-ui-elements';
 
 type PageHeaderProps = {
-  title: string | ReactNode;
-  description?: string | ReactNode;
-  titleRightChildren?: ReactNode;
+  title: string;
+  subtitle?: string;
+  description?: string;
 };
 
-export function PageHeader(props: Readonly<PageHeaderProps>) {
+export function PageHeader({
+  title,
+  subtitle,
+  description,
+}: Readonly<PageHeaderProps>) {
   return (
-    <Box sx={{ mt: 6.25 }}>
-      <Typography variant='h3' fontSize={50} fontWeight='800'>
-        {props.title}
-      </Typography>
-      {!!props.description && (
+    <Stack sx={{ my: 6 }} alignItems='center' spacing={3}>
+      <Image src={'/slooow.png'} alt={'logo'} width='110px' component='img' />
+      <Box>
+        <Typography variant='h3' fontSize={48} fontWeight='800' pb={1}>
+          {title}
+        </Typography>
+        <When value={!!subtitle}>
+          <Typography variant='h3' fontSize={30} fontWeight='800'>
+            {subtitle}
+          </Typography>
+        </When>
+      </Box>
+      <When value={!!description}>
         <Typography
           variant='h4'
-          fontSize={30}
-          fontWeight='700'
+          fontSize={25}
           color='text.disabled'
           textAlign='center'
         >
-          {props.description}
+          {description}
         </Typography>
-      )}
-    </Box>
+      </When>
+    </Stack>
   );
 }

@@ -5,9 +5,9 @@ import { PageHeader } from '@/components/UI/PageHeader';
 
 import { requestSendSms } from '@/services/client/otp-request-service';
 
-import PhoneStep from '@/components/register/PhoneStep';
-import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
-import LegalLanguage from '@/components/UI/LegalLanguage';
+import PhoneStep from '@/components/signup/PhoneStep';
+import SuccessfulSignUpStep from '@/components/signup/SuccessfulSignUpStep';
+import LegalLanguage from '@/components/signup/LegalLanguage';
 import {
   getOneClick,
   postOneClick,
@@ -20,7 +20,8 @@ import LoadingSpinner from '@/components/UI/LoadingSpinner';
 import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import RedirectStep from '@/components/register/RedirectStep';
+import RedirectStep from '@/components/signup/RedirectStep';
+import { TestPhoneNumbersBanner } from '@/components/signup/TestPhoneNumbersBanner';
 
 // Has all the steps for the registration process
 // The components will be rendered according the step state
@@ -146,20 +147,20 @@ function OneClickHosted() {
   return (
     <>
       <Head page='Signup' />
-
       <PageHeader
-        title='1-Click Hosted Signup'
-        description="It's Slooow, but not slow"
+        title='1-Click Signup'
+        subtitle='(Hosted)'
+        description='This is Slooow, but not slooow!'
       />
-      <Container maxWidth='xs' sx={{ py: 3 }}>
+      <Container maxWidth='xs'>
         <When value={step === Steps.LOADING}>
           <LoadingSpinner />
         </When>
         <When value={step !== Steps.LOADING}>
           <When value={step === Steps.PHONE}>
-            <PhoneStep onValidPhone={handleValidPhone} disabled={isLoading}>
-              <LegalLanguage />
-            </PhoneStep>
+            <PhoneStep onValidPhone={handleValidPhone} disabled={isLoading} />
+            <LegalLanguage />
+            <TestPhoneNumbersBanner />
           </When>
           <When value={step === Steps.SUCCESS}>
             <SuccessfulSignUpStep onSignOut={reset} />
