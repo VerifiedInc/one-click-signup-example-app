@@ -92,12 +92,12 @@ function OneClickHosted() {
     } else {
       setStep(Steps.REDIRECT);
       updateSnackbar({
-        message: `OTP code: ${otp}`,
+        message: `Verification Code: ${otp}`,
         severity: 'info',
         position: 'right',
         onCopyClick: () => {
           navigator.clipboard.writeText(otp);
-          updateSnackbar({ message: 'OTP code copied to clipboard' });
+          updateSnackbar({ message: 'Verification Code copied to clipboard' });
         },
       });
       setTimeout(() => router.push(url), 8000);

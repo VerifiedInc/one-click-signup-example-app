@@ -71,12 +71,12 @@ function OneClickSemiHosted() {
     if ('uuid' in response) {
       const otp = response?.code as string;
       updateSnackbar({
-        message: `OTP code: ${otp}`,
+        message: `Verification Code: ${otp}`,
         severity: 'info',
         position: 'right',
         onCopyClick: () => {
           navigator.clipboard.writeText(otp);
-          updateSnackbar({ message: 'OTP code copied to clipboard' });
+          updateSnackbar({ message: 'Verification Code copied to clipboard' });
         },
       });
       setOtp(response.code);

@@ -10,6 +10,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     }
     return res
       .status(400)
-      .json({ error: 'Failed to create OTP code. Try again later' });
+      .json({ error: 'Failed to create Verification Code. Try again later' });
   }
 }

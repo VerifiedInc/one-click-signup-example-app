@@ -7,7 +7,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json({ message: 'OTP verified' });
   } catch (error: any) {
     return res.status(400).json({
-      error: error.message || 'Failed to verify OTP code. Try again later',
+      error:
+        error.message || 'Failed to verify Verification Code. Try again later',
     });
   }
 }
