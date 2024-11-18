@@ -1,5 +1,5 @@
 {
-  "name": "@verifiedinc/repository-one-click-customer-starter-app",
+  "name": "@verifiedinc/one-click-signup-example-app",
   "version": "0.1.0",
   "private": false,
   "scripts": {
@@ -34,6 +34,7 @@
     "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
     "next": "14.2.14",
+    "notistack": "^3.0.1",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.1",
