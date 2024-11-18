@@ -35,7 +35,7 @@ function Signup() {
   const [phone, setPhone] = useState('');
 
   // Snackbar hook to manage snackbar messages
-  const { closeSnackbar, updateSnackbar } = useSnackbar();
+  const { closeSnackbar, enqueueSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -45,10 +45,10 @@ function Signup() {
     const response = await requestGenerateOtpAndSendSms({ phone });
 
     if (response?.error) {
-      updateSnackbar(response.error, 'error');
+      enqueueSnackbar(response.error, 'error');
     } else {
       const otp = response?.otp || '111111';
-      showClipboardSnackbar(otp, updateSnackbar, closeSnackbar);
+      showClipboardSnackbar(otp, enqueueSnackbar, closeSnackbar);
       setPhone(phone);
       setStep(Steps.OTP);
     }
@@ -60,7 +60,7 @@ function Signup() {
     setIsLoading(true);
     const otpResponse = await requestValidateOtp({ otpCode, phone });
     if (otpResponse?.error) {
-      updateSnackbar(`${otpResponse.error}: ${otpCode}`, 'error');
+      enqueueSnackbar(`${otpResponse.error}: ${otpCode}`, 'error');
     } else {
       setStep(Steps.FORM);
     }
@@ -71,7 +71,7 @@ function Signup() {
   // It is called when the user clicks on the resend otp button
   const handleRetryResendOtp = (phone: string) => {
     handleGenerateOtpAndSendSms(phone);
-    updateSnackbar('SMS sent successfully');
+    enqueueSnackbar('SMS sent successfully');
   };
 
   // Function to handle the register form submit

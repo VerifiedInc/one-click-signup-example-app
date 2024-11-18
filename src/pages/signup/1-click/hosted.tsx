@@ -38,7 +38,7 @@ function OneClickHosted() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Snackbar hook to manage snackbar messages
-  const { updateSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -66,7 +66,7 @@ function OneClickHosted() {
         response.url as string,
       );
     } else {
-      updateSnackbar(
+      enqueueSnackbar(
         'data' in response ? response.message : 'An unexpected error happened',
         'error',
       );
@@ -82,11 +82,11 @@ function OneClickHosted() {
   ): Promise<void> => {
     const response = await requestSendSms({ phone, otp: otp as string });
     if (response.error) {
-      updateSnackbar(response.error, 'error');
+      enqueueSnackbar(response.error, 'error');
       setIsLoading(false);
     } else {
       setStep(Steps.REDIRECT);
-      showClipboardSnackbar(otp, updateSnackbar, closeSnackbar);
+      showClipboardSnackbar(otp, enqueueSnackbar, closeSnackbar);
       setTimeout(() => router.push(url), 8000);
     }
   };
@@ -100,7 +100,7 @@ function OneClickHosted() {
     if ('credentials' in response) {
       setStep(Steps.SUCCESS);
     } else {
-      updateSnackbar(
+      enqueueSnackbar(
         "We couldn't find your identity. Please try again.",
         'error',
       );

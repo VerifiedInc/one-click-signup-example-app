@@ -43,7 +43,7 @@ export default function SignupOneClickFormStep({
   // This state will hold the index of the selected address
   const [selectedAddressIndex, setSelectedAddressIndex] = useState<
     number | null
-  >(null);
+  >(0);
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
 
   // Build the options for the address select input
@@ -146,7 +146,7 @@ export default function SignupOneClickFormStep({
         />
 
         <DatePicker
-          label='Select Date of Birth'
+          label='Birthday'
           slotProps={{
             textField: {
               error: !!errors.dob,
@@ -171,6 +171,7 @@ export default function SignupOneClickFormStep({
             <SSNInput
               onChange={onChange}
               value={value}
+              label='Social Security Number'
               error={!!errors.ssn}
               helperText={errors.ssn?.message?.toString()}
             />

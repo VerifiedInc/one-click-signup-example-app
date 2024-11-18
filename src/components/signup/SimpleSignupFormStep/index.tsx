@@ -46,7 +46,7 @@ export default function SimpleSignupFormStep({
         <TextField label='First Name' {...getCommonFormProps('firstName')} />
         <TextField label='Last Name' {...getCommonFormProps('lastName')} />
         <DatePicker
-          label='Select Date of Birth'
+          label='Birthday'
           slotProps={{
             textField: {
               error: !!errors.dob,
@@ -66,6 +66,7 @@ export default function SimpleSignupFormStep({
             <SSNInput
               onChange={onChange}
               value={value}
+              label='Social Security Number'
               error={!!errors.ssn}
               helperText={errors.ssn?.message?.toString()}
             />

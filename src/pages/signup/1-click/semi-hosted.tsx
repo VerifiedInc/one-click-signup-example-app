@@ -56,7 +56,7 @@ function OneClickSemiHosted() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Snackbar hook to manage snackbar messages
-  const { updateSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -70,12 +70,12 @@ function OneClickSemiHosted() {
     const response: OneClickPostResponse = await postOneClick({ phone });
     if ('uuid' in response) {
       const otp = response?.code as string;
-      showClipboardSnackbar(otp, updateSnackbar, closeSnackbar);
+      showClipboardSnackbar(otp, enqueueSnackbar, closeSnackbar);
       setOtp(response.code);
       setOneClickPostUuid(response.uuid);
       setStep(Steps.OTP);
     } else {
-      updateSnackbar(
+      enqueueSnackbar(
         'data' in response ? response.message : 'An unexpected error happened',
         'error',
       );
@@ -107,7 +107,7 @@ function OneClickSemiHosted() {
     ) {
       setStep(Steps.DOB);
     } else {
-      updateSnackbar(
+      enqueueSnackbar(
         'data' in response ? response.message : 'An unexpected error happened',
         'error',
       );
@@ -130,7 +130,7 @@ function OneClickSemiHosted() {
       console.log(response?.credentials);
       setStep(Steps.FORM);
     } else {
-      updateSnackbar(
+      enqueueSnackbar(
         'data' in response ? response.message : 'An unexpected error happened',
         'error',
       );
@@ -156,12 +156,12 @@ function OneClickSemiHosted() {
   const resendSms = async (phone: string) => {
     const response = await requestSendSms({ phone, otp: otp as string });
     if (response.error) {
-      updateSnackbar(response.error, 'error');
+      enqueueSnackbar(response.error, 'error');
       return;
     }
 
-    showClipboardSnackbar(otp as string, updateSnackbar, closeSnackbar);
-    updateSnackbar('SMS sent successfully');
+    showClipboardSnackbar(otp as string, enqueueSnackbar, closeSnackbar);
+    enqueueSnackbar('SMS sent successfully');
     setStep(Steps.OTP);
   };
 

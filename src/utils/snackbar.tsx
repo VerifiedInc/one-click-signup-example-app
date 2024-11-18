@@ -3,14 +3,14 @@ import { SnackbarKey } from '@verifiedinc-public/shared-ui-elements';
 
 export const showClipboardSnackbar = (
   otp: string,
-  updateSnackbar: any,
+  enqueueSnackbar: any,
   closeSnackbar: any,
 ) => {
-  updateSnackbar(`Verification Code: ${otp}`, 'info', {
+  enqueueSnackbar(`Verification Code: ${otp}`, 'info', {
     alertAction: {
       onAction: (id: SnackbarKey) => {
         navigator.clipboard.writeText(otp);
-        updateSnackbar('Verification Code copied to clipboard');
+        enqueueSnackbar('Verification Code copied to clipboard');
         closeSnackbar(id);
       },
       icon: (

@@ -49,7 +49,7 @@ function OneClickNonHosted() {
   );
 
   // Snackbar hook to manage snackbar messages
-  const { updateSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -69,7 +69,7 @@ function OneClickNonHosted() {
 
     const otpResponse = await requestValidateOtp({ otpCode, phone });
     if (otpResponse?.error) {
-      updateSnackbar(`${otpResponse.error}: ${otpCode}`, 'error', {});
+      enqueueSnackbar(`${otpResponse.error}: ${otpCode}`, 'error', {});
       setIsLoading(false);
       return;
     }
@@ -88,7 +88,7 @@ function OneClickNonHosted() {
     ) {
       setStep(Steps.DOB);
     } else {
-      updateSnackbar(
+      enqueueSnackbar(
         'data' in response ? response.message : 'An unexpected error happened',
         'error',
       );
@@ -106,7 +106,7 @@ function OneClickNonHosted() {
       setCredentials(response?.identity?.credentials ?? null);
       setStep(Steps.FORM);
     } else {
-      updateSnackbar(
+      enqueueSnackbar(
         'data' in response ? response.message : 'An unexpected error happened',
         'error',
       );
@@ -116,7 +116,7 @@ function OneClickNonHosted() {
   };
 
   const handleRetryResendOtp = (phone: string) => {
-    updateSnackbar('SMS sent successfully');
+    enqueueSnackbar('SMS sent successfully');
     generateOtp(phone);
   };
 
@@ -129,12 +129,12 @@ function OneClickNonHosted() {
   const generateOtp = async (phone: string) => {
     const response = await requestGenerateOtpAndSendSms({ phone });
     if (response.error) {
-      updateSnackbar(response.error, 'error');
+      enqueueSnackbar(response.error, 'error');
       return;
     }
 
     const otp = response?.otp || '111111';
-    showClipboardSnackbar(otp, updateSnackbar, closeSnackbar);
+    showClipboardSnackbar(otp, enqueueSnackbar, closeSnackbar);
 
     setStep(Steps.OTP);
   };
