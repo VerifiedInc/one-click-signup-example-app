@@ -19,6 +19,7 @@ import { TestPhoneNumbersBanner } from '@/components/signup/TestPhoneNumbersBann
 
 import { postOneClick } from '@/services/client/one-click-request-service';
 import {
+  IntegrationType,
   OneClickCredentials,
   OneClickErrorEnum,
   OneClickPostResponse,
@@ -74,7 +75,10 @@ function OneClickNonHosted() {
       return;
     }
 
-    const response: OneClickPostResponse = await postOneClick({ phone });
+    const response: OneClickPostResponse = await postOneClick(
+      IntegrationType['Non-Hosted'],
+      { phone },
+    );
     console.log(response);
     if ('identity' in response) {
       setCredentials(response?.identity?.credentials ?? null);
@@ -101,7 +105,10 @@ function OneClickNonHosted() {
   const handleValidDob = async (birthDate: string) => {
     setIsLoading(true);
 
-    const response = await postOneClick({ phone, birthDate });
+    const response = await postOneClick(IntegrationType['Non-Hosted'], {
+      phone,
+      birthDate,
+    });
     if ('identity' in response) {
       setCredentials(response?.identity?.credentials ?? null);
       setStep(Steps.FORM);

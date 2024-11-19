@@ -1,3 +1,9 @@
+export enum IntegrationType {
+  'Hosted' = 'Hosted',
+  'Semi-Hosted' = 'Semi-Hosted',
+  'Non-Hosted' = 'Non-Hosted',
+}
+
 export type OneClickCredentials = {
   fullName?: {
     firstName: string;

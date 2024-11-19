@@ -12,7 +12,7 @@ import {
   getOneClick,
   postOneClick,
 } from '@/services/client/one-click-request-service';
-import { OneClickPostResponse } from '@/types/OneClick.types';
+import { IntegrationType, OneClickPostResponse } from '@/types/OneClick.types';
 import { Container } from '@mui/material';
 import { useSnackbar, When } from '@verifiedinc-public/shared-ui-elements';
 
@@ -48,10 +48,13 @@ function OneClickHosted() {
   const handleValidPhone = async (phone: string) => {
     setIsLoading(true);
 
-    const response: OneClickPostResponse = await postOneClick({
-      phone,
-      content: { title: 'Signup', description: 'Signup to Slooow' },
-    });
+    const response: OneClickPostResponse = await postOneClick(
+      IntegrationType['Hosted'],
+      {
+        phone,
+        content: { title: 'Signup', description: 'Signup to Slooow' },
+      },
+    );
     console.log(response);
     if ('url' in response) {
       sendSmsAndRedirect(
@@ -81,7 +84,7 @@ function OneClickHosted() {
     } else {
       setStep(Steps.REDIRECT);
       showClipboardSnackbar(otp, enqueueSnackbar, closeSnackbar);
-      setTimeout(() => router.push(url), 8000);
+      setTimeout(() => router.push(url), 5000);
     }
   };
 

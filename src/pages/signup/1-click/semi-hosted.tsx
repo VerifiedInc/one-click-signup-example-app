@@ -19,6 +19,7 @@ import {
   postOneClick,
 } from '@/services/client/one-click-request-service';
 import {
+  IntegrationType,
   OneClickCredentials,
   OneClickErrorEnum,
   OneClickPostResponse,
@@ -67,7 +68,10 @@ function OneClickSemiHosted() {
     setIsLoading(true);
     setPhone(phone);
 
-    const response: OneClickPostResponse = await postOneClick({ phone });
+    const response: OneClickPostResponse = await postOneClick(
+      IntegrationType['Semi-Hosted'],
+      { phone },
+    );
     if ('uuid' in response) {
       const otp = response?.code as string;
       showClipboardSnackbar(otp, enqueueSnackbar, closeSnackbar);

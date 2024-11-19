@@ -5,12 +5,14 @@
  */
 
 import {
+  IntegrationType,
   OneClickGetResponse,
   OneClickPatchRequest,
   OneClickPatchResponse,
   OneClickPostRequest,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
+import { flow } from 'lodash';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -22,13 +24,55 @@ const headers = {
  * You can see the implementation in src/pages/api/1-click/index.ts
  */
 export const postOneClick = async (
+  flowIntegrationType: IntegrationType,
   payload: OneClickPostRequest,
 ): Promise<OneClickPostResponse> => {
   return fetch('/api/1-click', {
     method: 'POST',
     body: JSON.stringify(payload),
     headers,
-  }).then((response) => response.json());
+  })
+    .then((response) => response.json())
+    .then((response) =>
+      checkIntegrationMismatch(flowIntegrationType, response),
+    );
+};
+
+/**
+ * Check if the integration type in the response matches the flow integration type
+ * If it doesn't match, return an error response
+ */
+const checkIntegrationMismatch = (
+  flowIntegrationType: IntegrationType,
+  response: OneClickPostResponse,
+): OneClickPostResponse => {
+  let responseIntegrationType: IntegrationType | null = null;
+  if ('url' in response) {
+    responseIntegrationType = IntegrationType['Hosted'];
+  } else if ('code' in response) {
+    responseIntegrationType = IntegrationType['Semi-Hosted'];
+  } else if ('identity' in response) {
+    responseIntegrationType = IntegrationType['Non-Hosted'];
+  }
+
+  if (
+    // if the responseIntegrationType is null, it means the response is an error already
+    // so we don't need to check the integration type
+    responseIntegrationType !== null &&
+    responseIntegrationType !== flowIntegrationType
+  ) {
+    return {
+      name: 'IntegrationTypeMismatch',
+      message: `You are using the ${flowIntegrationType} flow in this app, but your brand's integration type is set to ${responseIntegrationType} Please update this setting to ${flowIntegrationType} in the Dashboard.`,
+      code: 400,
+      className: 'IntegrationTypeMismatch',
+      data: {
+        errorCode: 'INTEGRATION_TYPE_MISMATCH',
+      },
+    };
+  }
+
+  return response;
 };
 
 /**
