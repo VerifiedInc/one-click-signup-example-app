@@ -44,19 +44,13 @@ function OneClickHosted() {
 
   // Function to call the one click post endpoint
   // It is called when the user finishes typing the phone number
-  // It will redirect the user to the web wallet where the user will finish the registration
-  // If the NEXT_PUBLIC_REDIRECT_URL is set, the user will be redirected back to this page once the registration is done
-  // Otherwise, the user will be redirected to the brand's default redirect url
+  // It will redirect the user to the web wallet where the user will finish the signup
   const handleValidPhone = async (phone: string) => {
     setIsLoading(true);
 
-    const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL;
     const response: OneClickPostResponse = await postOneClick({
       phone,
       content: { title: 'Signup', description: 'Signup to Slooow' },
-      redirectUrl: redirectUrl
-        ? `${process.env.NEXT_PUBLIC_REDIRECT_URL}/register/1-click/hosted`
-        : undefined,
     });
     console.log(response);
     if ('url' in response) {
