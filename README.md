@@ -64,20 +64,3 @@ For example:
 2. `src/pages/signup/1-click/hosted.tsx` – This page is for the registration flow with the 1-Click hosted integration.
 
 See [Nextjs Pages docs](https://nextjs.org/docs/pages/building-your-application/routing/pages-and-layouts) for more details on the routing system.
-
-## Setting Up Your Hosted Redirect URL for Local Development Testing
-
-To test the 1-Click hosted integration locally, you’ll need to configure the `NEXT_PUBLIC_REDIRECT_URL` environment variable. If this variable is left empty, the hosted flow will default to the brand’s main redirect URL.
-
-**Important**: Setting `http://localhost:3061` won’t work due to security restrictions. Instead, use a tunneling service like Ngrok or Localtunnel to create a secure, publicly accessible URL.
-
-Example with localtunnel:
-Install it globally (`npm install -g localtunnel`) and run `lt --port 3061`.
-
-It will generate some url. Add it to your .env file:
-
-Example:
-
-```
-NEXT_PUBLIC_BASE_URL=https://test-test-test.loca.lt
-```
