@@ -4,7 +4,6 @@ import {
   Divider,
   IconButton,
   Menu,
-  MenuList,
   Stack,
   Toolbar,
   useTheme,
@@ -17,9 +16,9 @@ import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 
 import { IconPlayer } from '@/components/UI/IconPlayer';
+import { useRouter } from 'next/router';
 import MenuItem from './MenuItem';
 import { styles } from './mainLayout.styles';
-import { useRouter } from 'next/router';
 
 function Menubar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
