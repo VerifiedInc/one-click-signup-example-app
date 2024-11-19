@@ -14,12 +14,15 @@ import {
 } from '@/services/client/one-click-request-service';
 import { IntegrationType, OneClickPostResponse } from '@/types/OneClick.types';
 import { Container } from '@mui/material';
-import { useSnackbar, When } from '@verifiedinc-public/shared-ui-elements';
+import {
+  TestPhoneNumbersBanner,
+  useSnackbar,
+  When,
+} from '@verifiedinc-public/shared-ui-elements';
 
 import LoadingSpinner from '@/components/UI/LoadingSpinner';
 
 import RedirectStep from '@/components/signup/RedirectStep';
-import { TestPhoneNumbersBanner } from '@/components/signup/TestPhoneNumbersBanner';
 import { showClipboardSnackbar } from '@/utils/snackbar';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';

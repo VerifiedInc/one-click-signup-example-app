@@ -12,7 +12,6 @@ import PhoneStep from '@/components/signup/PhoneStep';
 import SignupOneClickFormStep from '@/components/signup/SignupOneClickFormStep';
 import { SignupOneClickForm } from '@/components/signup/SignupOneClickFormStep/signup-one-click.schema';
 import SuccessfulSignUpStep from '@/components/signup/SuccessfulSignUpStep';
-import { TestPhoneNumbersBanner } from '@/components/signup/TestPhoneNumbersBanner';
 import {
   getOneClick,
   patchOneClick,
@@ -26,7 +25,11 @@ import {
 } from '@/types/OneClick.types';
 import { showClipboardSnackbar } from '@/utils/snackbar';
 import { Container } from '@mui/material';
-import { useSnackbar, When } from '@verifiedinc-public/shared-ui-elements';
+import {
+  TestPhoneNumbersBanner,
+  useSnackbar,
+  When,
+} from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 

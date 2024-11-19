@@ -27,6 +27,7 @@ export const postOneClick = async (
   flowIntegrationType: IntegrationType,
   payload: OneClickPostRequest,
 ): Promise<OneClickPostResponse> => {
+  console.log(payload, flowIntegrationType);
   return fetch('/api/1-click', {
     method: 'POST',
     body: JSON.stringify(payload),
@@ -46,6 +47,12 @@ const checkIntegrationMismatch = (
   flowIntegrationType: IntegrationType,
   response: OneClickPostResponse,
 ): OneClickPostResponse => {
+  console.log(response);
+  // if the response is an error, we don't need to check the integration type
+  if ('data' in response || 'className' in response) {
+    return response;
+  }
+
   let responseIntegrationType: IntegrationType | null = null;
   if ('url' in response) {
     responseIntegrationType = IntegrationType['Hosted'];
@@ -56,8 +63,7 @@ const checkIntegrationMismatch = (
   }
 
   if (
-    // if the responseIntegrationType is null, it means the response is an error already
-    // so we don't need to check the integration type
+    // At this point, we know that responseIntegrationType is not null, but if were to be null, we would want to return the response
     responseIntegrationType !== null &&
     responseIntegrationType !== flowIntegrationType
   ) {

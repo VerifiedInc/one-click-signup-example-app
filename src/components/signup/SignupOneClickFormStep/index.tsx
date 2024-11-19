@@ -119,7 +119,7 @@ export default function SignupOneClickFormStep({
     };
   };
 
-  // Fill the default value of the date of birth field
+  // Fill the default value of the Birthday field
   // This is one way of handling uncontrolled components with react hook form
   useEffect(() => {
     if (credentials?.birthDate) {

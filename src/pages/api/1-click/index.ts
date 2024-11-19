@@ -20,7 +20,7 @@ import {
   OneClickPostResponse,
 } from '@/types/OneClick.types';
 import { getOneClickEnvsOrthrow } from '@/utils/api';
-import { ssnFormatter } from '@/utils/ssn';
+import { ssnFormatter } from '@verifiedinc-public/shared-ui-elements';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {

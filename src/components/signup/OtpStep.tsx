@@ -2,9 +2,9 @@ import { Box } from '@mui/material';
 import {
   OTPInput,
   OTPInputInstance,
+  ResendPhoneBanner,
 } from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { ResendPhoneBanner } from './ResendPhoneBanner';
 
 interface OtpStepProps {
   phone: string;
