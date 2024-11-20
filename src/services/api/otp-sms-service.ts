@@ -25,7 +25,7 @@ export function verifyOtp(code: string, phone: string) {
   const verificationCode = findByPhoneAndCode(phone, code);
 
   if (verificationCode?.code !== code || verificationCode?.phone !== phone) {
-    throw new Error('Invalid or expired verification code');
+    throw new Error('Invalid or expired Verification Code');
   }
 
   console.log('OTP verified', { phone, code });

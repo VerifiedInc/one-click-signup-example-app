@@ -11,7 +11,7 @@ export default function SuccessfulSignUpStep({
 }: SuccessfulSignUpStepProps) {
   const theme = useTheme();
   return (
-    <Stack spacing={3} sx={{ alignItems: 'center', mt: -3 }}>
+    <Stack spacing={3} sx={{ alignItems: 'center', mt: -4 }}>
       <Title sx={{ textAlign: 'center', pb: 2 }}>
         You've signed up for Slooow!
       </Title>

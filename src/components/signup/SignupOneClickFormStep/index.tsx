@@ -139,7 +139,7 @@ export default function SignupOneClickFormStep({
   };
 
   return (
-    <Box component='form' onSubmit={handleSubmit(onSubmit)}>
+    <Box component='form' onSubmit={handleSubmit(onSubmit)} pb={4}>
       <Stack spacing={1}>
         <TextField
           label='First Name'

@@ -20,7 +20,7 @@ export function PageHeader({
           {title}
         </Typography>
         <When value={!!subtitle}>
-          <Typography variant='h3' fontSize={30} fontWeight='800'>
+          <Typography variant='h3' fontSize={30} fontWeight='800' pt={2}>
             {subtitle}
           </Typography>
         </When>
