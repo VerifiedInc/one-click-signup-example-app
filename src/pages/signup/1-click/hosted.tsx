@@ -26,6 +26,7 @@ import RedirectStep from '@/components/signup/RedirectStep';
 import { showClipboardSnackbar } from '@/utils/snackbar';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { getHeaderDescription } from '@/utils/1-click';
 
 // Has all the steps for the registration process
 // The components will be rendered according the step state
@@ -137,7 +138,7 @@ function OneClickHosted() {
       <PageHeader
         title='1-Click Signup'
         subtitle='(Hosted)'
-        description='This is Slooow, but not slooow!'
+        description={getHeaderDescription(step, Steps.SUCCESS)}
       />
       <Container maxWidth='xs'>
         <When value={step === Steps.LOADING}>

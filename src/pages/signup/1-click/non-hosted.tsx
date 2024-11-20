@@ -32,6 +32,7 @@ import {
 } from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { getHeaderDescription } from '@/utils/1-click';
 
 // Has all the steps for the registration process
 // The components will be rendered according the step state
@@ -159,7 +160,7 @@ function OneClickNonHosted() {
       <PageHeader
         title='1-Click Signup'
         subtitle='(Non-Hosted)'
-        description='This is Slooow, but not slooow!'
+        description={getHeaderDescription(step, Steps.SUCCESS)}
       />
       <Container maxWidth='xs'>
         <When value={step === Steps.PHONE}>
