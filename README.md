@@ -1,7 +1,5 @@
 # 1-Click Signup Example App
 
-![Slooow logo](/public/slooow.png)
-
 ## About
 
 This app shows Verified [1-Click Signup](https://docs.verified.inc/) for a fictional brand called Slooow, whose logo is a sloth! 🦥
@@ -96,7 +94,8 @@ After the app has collected a user's phone number, it calls the Verified API to 
 
 > [!TIP]
 > You should also set the Slooow brand's **logo** setting as the image below and **color** setting as `#D32D2D`. This will configure the branding on the Verified hosted page.
-> ![Slooow logo](LINK_TO_IMAGE)
+
+> ![Slooow logo](/public/slooow.png)
 
 With the Hosted integration type, you use Verified's UI, and you use Verified's verification code to verify user phone numbers. Verified (rather than the app) handles this functionality.
 
