@@ -27,16 +27,12 @@ function Menubar() {
   const router = useRouter();
 
   // Snackbar hook to manage snackbar messages
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { closeSnackbar } = useSnackbar();
 
   const onMenuClick = (path: string) => {
     closeSnackbar();
     router.push(path);
     setAnchorEl(null);
-    enqueueSnackbar(
-      'Do not forget to change your integration type in the dashboard',
-      'warning',
-    );
   };
 
   return (
