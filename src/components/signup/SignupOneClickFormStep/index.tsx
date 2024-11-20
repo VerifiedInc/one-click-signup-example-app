@@ -80,20 +80,19 @@ export default function SignupOneClickFormStep({
   const handleSelectAddressOption = (
     option: { label: string; id: string } | null,
   ) => {
-    if (!option) {
-      setSelectedAddress(null);
-      return;
-    }
-    const isNewAddress = option.id === '-1';
+    const isNewAddress = option?.id === '-1';
     setIsAddingNewAddress(isNewAddress);
-    setSelectedAddress(option);
+    setSelectedAddress(option ?? null);
 
     // Get the address data from the credentials or create an empty object
-    const address = isNewAddress
-      ? ({} as any)
-      : credentials?.address?.[+option.id];
+    const addressCredentials =
+      !isNewAddress && !!option ? credentials?.address?.[+option.id] : {};
 
     // Update the form fields with the address data
+    updateAddressFields(addressCredentials);
+  };
+
+  const updateAddressFields = (address: any) => {
     Object.entries({
       addressLine1: address?.line1 || '',
       city: address?.city || '',
@@ -193,6 +192,7 @@ export default function SignupOneClickFormStep({
             ...renderAddressSelectErrorMessage(),
           }}
           value={selectedAddress}
+          disableClearable={true}
           options={addressesOptions}
           onChange={handleSelectAddressOption}
         />

@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
-import { PhoneInput, Typography } from '@verifiedinc-public/shared-ui-elements';
+import { PhoneInput } from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode } from 'react';
+import Title from '../UI/Title';
 
 interface PhoneStepProps {
   onValidPhone: (phone: string) => void;
@@ -13,9 +14,7 @@ export default function PhoneStep({
 }: PhoneStepProps): ReactNode {
   return (
     <Box>
-      <Typography variant='h6' gutterBottom>
-        Enter your phone number:
-      </Typography>
+      <Title>Enter your phone number:</Title>
       <PhoneInput onValidPhone={onValidPhone} InputProps={{ disabled }} />
     </Box>
   );

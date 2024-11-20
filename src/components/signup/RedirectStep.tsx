@@ -1,14 +1,12 @@
 import { Box } from '@mui/material';
-import { Typography } from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode } from 'react';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import Title from '../UI/Title';
 
 export default function RedirectStep(): ReactNode {
   return (
-    <Box>
-      <Typography variant='h6' gutterBottom>
-        You'll be redirected to the wallet
-      </Typography>
+    <Box my={3}>
+      <Title>You'll be redirected to the wallet</Title>
       <LoadingSpinner />
     </Box>
   );

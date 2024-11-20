@@ -9,6 +9,7 @@ import { ReactNode, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import LegalLanguage from '../LegalLanguage';
 import { DobForm, dobFormSchema } from './dob.schema';
+import Title from '@/components/UI/Title';
 
 interface DobFormStepProps {
   onValidDob: (dob: string) => void;
@@ -49,6 +50,7 @@ export default function DobFormStep({
 
   return (
     <Stack spacing={3}>
+      <Title>Enter your Birthday:</Title>
       <Box component='form' onSubmit={handleSubmit(onSubmit)}>
         <Controller
           control={control}
@@ -57,6 +59,8 @@ export default function DobFormStep({
           render={({ field }) => (
             <DateInput
               {...field}
+              size='medium'
+              label='MM/DD/YYYY'
               error={!!errors.dob}
               disabled={shouldBeDisabled}
               onChange={(value) => {

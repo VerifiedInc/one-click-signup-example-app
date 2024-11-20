@@ -1,5 +1,6 @@
 import { Button, Stack, Typography, useTheme } from '@mui/material';
 import { VerifiedImage } from '@verifiedinc-public/shared-ui-elements';
+import Title from '../UI/Title';
 
 interface SuccessfulSignUpStepProps {
   onSignOut: () => void;
@@ -10,14 +11,10 @@ export default function SuccessfulSignUpStep({
 }: SuccessfulSignUpStepProps) {
   const theme = useTheme();
   return (
-    <Stack spacing={3} sx={{ alignItems: 'center' }}>
-      <Typography
-        variant='h3'
-        align='center'
-        sx={{ fontSize: 22, fontWeight: 400, mt: 2 }}
-      >
-        You have successfully signed up to Slooow.
-      </Typography>
+    <Stack spacing={3} sx={{ alignItems: 'center', mt: -3 }}>
+      <Title sx={{ textAlign: 'center', pb: 2 }}>
+        You've signed up for Slooow!
+      </Title>
       <VerifiedImage
         theme={{
           light: theme.palette.primary.main,
