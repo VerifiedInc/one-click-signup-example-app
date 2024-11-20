@@ -1,20 +1,24 @@
 import {
+  Box,
   Container,
+  Divider,
   IconButton,
   Menu,
   Stack,
   Toolbar,
   useTheme,
 } from '@mui/material';
-import { Typography } from '@verifiedinc-public/shared-ui-elements';
+import {
+  Typography,
+  useSnackbar,
+} from '@verifiedinc-public/shared-ui-elements';
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 
 import { IconPlayer } from '@/components/UI/IconPlayer';
+import { useRouter } from 'next/router';
 import MenuItem from './MenuItem';
 import { styles } from './mainLayout.styles';
-import { useRouter } from 'next/router';
-import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
 
 function Menubar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -23,16 +27,12 @@ function Menubar() {
   const router = useRouter();
 
   // Snackbar hook to manage snackbar messages
-  const { disclosure, snackbarOptions, updateSnackbar } = useSnackbar();
+  const { closeSnackbar } = useSnackbar();
 
   const onMenuClick = (path: string) => {
+    closeSnackbar();
     router.push(path);
     setAnchorEl(null);
-    updateSnackbar({
-      message: 'Do not forget to change your integration type in the dashboard',
-      severity: 'warning',
-      position: 'right',
-    });
   };
 
   return (
@@ -93,27 +93,36 @@ function Menubar() {
           disableScrollLock
         >
           <MenuItem
-            label='Without 1-click'
-            path='/register'
-            onClick={() => onMenuClick('/register')}
+            label='Manual Signup'
+            path='/signup'
+            onClick={() => onMenuClick('/signup')}
+          />
+          <Box sx={{ py: 1 }}>
+            <Divider />
+            <Typography
+              variant='subtitle2'
+              sx={{ ml: 2, mt: 1, color: 'text.secondary' }}
+            >
+              1-Click Signup
+            </Typography>
+          </Box>
+
+          <MenuItem
+            label='Non-Hosted'
+            path='/signup/1-click/non-hosted'
+            onClick={() => onMenuClick('/signup/1-click/non-hosted')}
           />
           <MenuItem
-            label='1-click Non-Hosted'
-            path='/register/1-click/non-hosted'
-            onClick={() => onMenuClick('/register/1-click/non-hosted')}
+            label='Semi-Hosted'
+            path='/signup/1-click/semi-hosted'
+            onClick={() => onMenuClick('/signup/1-click/semi-hosted')}
           />
           <MenuItem
-            label='1-click Semi-Hosted'
-            path='/register/1-click/semi-hosted'
-            onClick={() => onMenuClick('/register/1-click/semi-hosted')}
-          />
-          <MenuItem
-            label='1-click Hosted'
-            path='/register/1-click/hosted'
-            onClick={() => onMenuClick('/register/1-click/hosted')}
+            label='Hosted'
+            path='/signup/1-click/hosted'
+            onClick={() => onMenuClick('/signup/1-click/hosted')}
           />
         </Menu>
-        <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
       </Stack>
     </Toolbar>
   );

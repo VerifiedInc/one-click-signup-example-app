@@ -8,6 +8,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import type { AppProps } from 'next/app';
+import {
+  CustomAlertComponent,
+  SnackbarProvider,
+} from '@verifiedinc-public/shared-ui-elements';
 
 function AppBody({ Component, pageProps }: AppProps & { Component: any }) {
   const getLayout = Component.getLayout || ((page: any) => page);
@@ -20,6 +24,11 @@ export default function App(props: AppProps & { Component: any }) {
     <>
       <Head />
       <ThemeProvider theme={theme}>
+        <SnackbarProvider
+          maxSnack={2}
+          Components={{ customAlertComponent: CustomAlertComponent }}
+          TransitionProps={{ direction: 'up' }}
+        />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Box
             className={`${lato.className}`}

@@ -1,5 +1,5 @@
 {
-  "name": "@verifiedinc/repository-one-click-customer-starter-app",
+  "name": "@verifiedinc/one-click-signup-example-app",
   "version": "0.1.0",
   "private": false,
   "scripts": {
@@ -28,12 +28,13 @@
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@mui/x-date-pickers": "^7.22.1",
-    "@verifiedinc-public/shared-ui-elements": "^0.12.0",
     "dayjs": "^1.11.13",
+    "@verifiedinc-public/shared-ui-elements": "1.1.0",
     "framer-motion": "^11.11.0",
     "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
     "next": "14.2.14",
+    "notistack": "^3.0.1",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.1",

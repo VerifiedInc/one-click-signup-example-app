@@ -2,14 +2,14 @@ import { useRouter } from 'next/router';
 
 import { MainLayout } from '@/components/layouts/main-layout';
 
-function StarterApp() {
+function OneClickSignupExampleApp() {
   const router = useRouter();
 
-  router.push('/register');
+  router.push('/signup');
 
   return null;
 }
 
-StarterApp.getLayout = MainLayout;
+OneClickSignupExampleApp.getLayout = MainLayout;
 
-export default StarterApp;
+export default OneClickSignupExampleApp;

@@ -41,32 +41,38 @@ export default function SignupOneClickFormStep({
     resolver: zodResolver(signupOneClickFormSchema),
   });
   // This state will hold the index of the selected address
-  const [selectedAddressIndex, setSelectedAddressIndex] = useState<
-    number | null
-  >(null);
+  const [selectedAddress, setSelectedAddress] = useState<AddressOption | null>(
+    null,
+  );
+
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
 
-  // Build the options for the address select input
-  // Makes use of react useMemo to avoid re-rendering the options on every render
-  const buildAddressOptions = useMemo(() => {
-    const options = [
-      {
-        id: '0',
-        label: '+ Add New Address',
-      },
-    ];
+  interface AddressOption {
+    id: string;
+    label: string;
+  }
 
+  const addressesOptions = useMemo(() => {
+    let options: { id: string; label: string }[] = [];
     if (credentials?.address) {
-      options.push(
-        ...(credentials.address?.map((address, index) => ({
-          id: `${index + 1}`,
-          label: `${address.line1}, ${address.city}, ${address.state}, ${address.zipCode}`,
-        })) ?? []),
-      );
+      options = credentials.address?.map((address, index) => ({
+        id: `${index}`,
+        label: `${address.line1}, ${address.city}, ${address.state}, ${address.zipCode}`,
+      }));
     }
+    options.push({
+      id: '-1',
+      label: '+ Add New Address',
+    });
 
     return options;
-  }, [credentials?.address]);
+  }, []);
+
+  useEffect(() => {
+    if (addressesOptions.length > 0) {
+      handleSelectAddressOption(addressesOptions[0]);
+    }
+  }, [addressesOptions]);
 
   // Function to handle the selected address input
   // It will set the selected address index and fill the form fields with the address data
@@ -74,17 +80,19 @@ export default function SignupOneClickFormStep({
   const handleSelectAddressOption = (
     option: { label: string; id: string } | null,
   ) => {
-    if (!option) {
-      setSelectedAddressIndex(null);
-      return;
-    }
-    setIsAddingNewAddress(option.id === '0');
-    setSelectedAddressIndex(+option.id);
+    const isNewAddress = option?.id === '-1';
+    setIsAddingNewAddress(isNewAddress);
+    setSelectedAddress(option ?? null);
 
-    const index = option.id === '0' ? -1 : +option.id - 1;
-    const address = index > -1 ? credentials?.address?.[index] : ({} as any);
+    // Get the address data from the credentials or create an empty object
+    const addressCredentials =
+      !isNewAddress && !!option ? credentials?.address?.[+option.id] : {};
 
-    // Set the address fields to the selected address or empty string
+    // Update the form fields with the address data
+    updateAddressFields(addressCredentials);
+  };
+
+  const updateAddressFields = (address: any) => {
     Object.entries({
       addressLine1: address?.line1 || '',
       city: address?.city || '',
@@ -94,7 +102,7 @@ export default function SignupOneClickFormStep({
     }).forEach(([field, value]) => {
       setValue(field as keyof SignupOneClickForm, value as string);
       // Update the error state of the field
-      // If the value is empty, it will not trigger the validation
+      // If the value is empty, it will not trigger the validation to avoid showing the error messages
       if (value) {
         trigger(field as keyof SignupOneClickForm);
       }
@@ -110,7 +118,7 @@ export default function SignupOneClickFormStep({
     };
   };
 
-  // Fill the default value of the date of birth field
+  // Fill the default value of the Birthday field
   // This is one way of handling uncontrolled components with react hook form
   useEffect(() => {
     if (credentials?.birthDate) {
@@ -122,7 +130,7 @@ export default function SignupOneClickFormStep({
   // It will show an error message bellow the address select input
   // Necessary because the select input is not really part of the form, it's used to control the address fields
   const renderAddressSelectErrorMessage = () => {
-    if (errors.addressLine1 && selectedAddressIndex === null) {
+    if (errors.addressLine1 && selectedAddress === null) {
       return {
         helperText: `Please select an address or add a new one`,
         error: true,
@@ -131,7 +139,7 @@ export default function SignupOneClickFormStep({
   };
 
   return (
-    <Box component='form' onSubmit={handleSubmit(onSubmit)}>
+    <Box component='form' onSubmit={handleSubmit(onSubmit)} pb={4}>
       <Stack spacing={1}>
         <TextField
           label='First Name'
@@ -146,7 +154,7 @@ export default function SignupOneClickFormStep({
         />
 
         <DatePicker
-          label='Select Date of Birth'
+          label='Birthday'
           slotProps={{
             textField: {
               error: !!errors.dob,
@@ -171,6 +179,7 @@ export default function SignupOneClickFormStep({
             <SSNInput
               onChange={onChange}
               value={value}
+              label='Social Security Number'
               error={!!errors.ssn}
               helperText={errors.ssn?.message?.toString()}
             />
@@ -182,11 +191,13 @@ export default function SignupOneClickFormStep({
             label: 'Select the address',
             ...renderAddressSelectErrorMessage(),
           }}
-          options={buildAddressOptions}
+          value={selectedAddress}
+          disableClearable={true}
+          options={addressesOptions}
           onChange={handleSelectAddressOption}
         />
 
-        <When value={selectedAddressIndex !== null}>
+        <When value={selectedAddress !== null}>
           <TextField
             label='Address Line 1'
             {...getCommonFormProps('addressLine1')}

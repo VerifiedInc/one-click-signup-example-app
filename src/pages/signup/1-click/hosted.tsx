@@ -5,22 +5,28 @@ import { PageHeader } from '@/components/UI/PageHeader';
 
 import { requestSendSms } from '@/services/client/otp-request-service';
 
-import PhoneStep from '@/components/register/PhoneStep';
-import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
-import LegalLanguage from '@/components/UI/LegalLanguage';
+import LegalLanguage from '@/components/signup/LegalLanguage';
+import PhoneStep from '@/components/signup/PhoneStep';
+import SuccessfulSignUpStep from '@/components/signup/SuccessfulSignUpStep';
 import {
   getOneClick,
   postOneClick,
 } from '@/services/client/one-click-request-service';
-import { OneClickPostResponse } from '@/types/OneClick.types';
+import { IntegrationType, OneClickPostResponse } from '@/types/OneClick.types';
 import { Container } from '@mui/material';
-import { When } from '@verifiedinc-public/shared-ui-elements';
+import {
+  TestPhoneNumbersBanner,
+  useSnackbar,
+  When,
+} from '@verifiedinc-public/shared-ui-elements';
 
 import LoadingSpinner from '@/components/UI/LoadingSpinner';
-import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
+
+import RedirectStep from '@/components/signup/RedirectStep';
+import { showClipboardSnackbar } from '@/utils/snackbar';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import RedirectStep from '@/components/register/RedirectStep';
+import { getHeaderDescription } from '@/utils/1-click';
 
 // Has all the steps for the registration process
 // The components will be rendered according the step state
@@ -36,26 +42,23 @@ function OneClickHosted() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Snackbar hook to manage snackbar messages
-  const { disclosure, snackbarOptions, updateSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const router = useRouter();
 
   // Function to call the one click post endpoint
   // It is called when the user finishes typing the phone number
-  // It will redirect the user to the web wallet where the user will finish the registration
-  // If the NEXT_PUBLIC_REDIRECT_URL is set, the user will be redirected back to this page once the registration is done
-  // Otherwise, the user will be redirected to the brand's default redirect url
+  // It will redirect the user to the web wallet where the user will finish the signup
   const handleValidPhone = async (phone: string) => {
     setIsLoading(true);
 
-    const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL;
-    const response: OneClickPostResponse = await postOneClick({
-      phone,
-      content: { title: 'Signup', description: 'Register to Slooow' },
-      redirectUrl: redirectUrl
-        ? `${process.env.NEXT_PUBLIC_REDIRECT_URL}/register/1-click/hosted`
-        : undefined,
-    });
+    const response: OneClickPostResponse = await postOneClick(
+      IntegrationType['Hosted'],
+      {
+        phone,
+        content: { title: 'Signup', description: 'Signup to Slooow' },
+      },
+    );
     console.log(response);
     if ('url' in response) {
       sendSmsAndRedirect(
@@ -64,13 +67,10 @@ function OneClickHosted() {
         response.url as string,
       );
     } else {
-      updateSnackbar({
-        message:
-          'data' in response
-            ? response.message
-            : 'An unexpected error happened',
-        severity: 'error',
-      });
+      enqueueSnackbar(
+        'data' in response ? response.message : 'An unexpected error happened',
+        'error',
+      );
       setIsLoading(false);
     }
   };
@@ -83,23 +83,12 @@ function OneClickHosted() {
   ): Promise<void> => {
     const response = await requestSendSms({ phone, otp: otp as string });
     if (response.error) {
-      updateSnackbar({
-        message: response.error,
-        severity: 'error',
-      });
+      enqueueSnackbar(response.error, 'error');
       setIsLoading(false);
     } else {
       setStep(Steps.REDIRECT);
-      updateSnackbar({
-        message: `OTP code: ${otp}`,
-        severity: 'info',
-        position: 'right',
-        onCopyClick: () => {
-          navigator.clipboard.writeText(otp);
-          updateSnackbar({ message: 'OTP code copied to clipboard' });
-        },
-      });
-      setTimeout(() => router.push(url), 8000);
+      showClipboardSnackbar(otp, enqueueSnackbar, closeSnackbar);
+      setTimeout(() => router.push(url), 5000);
     }
   };
 
@@ -112,10 +101,10 @@ function OneClickHosted() {
     if ('credentials' in response) {
       setStep(Steps.SUCCESS);
     } else {
-      updateSnackbar({
-        message: "We couldn't find your identity. Please try again.",
-        severity: 'error',
-      });
+      enqueueSnackbar(
+        "We couldn't find your identity. Please try again.",
+        'error',
+      );
       setStep(Steps.PHONE);
     }
 
@@ -145,21 +134,21 @@ function OneClickHosted() {
 
   return (
     <>
-      <Head page='Register' />
-
+      <Head page='Signup' />
       <PageHeader
-        title='1-click Hosted Register'
-        description="It's Slooow, but not slow"
+        title='1-Click Signup'
+        subtitle='(Hosted)'
+        description={getHeaderDescription(step, Steps.SUCCESS)}
       />
-      <Container maxWidth='xs' sx={{ py: 3 }}>
+      <Container maxWidth='xs'>
         <When value={step === Steps.LOADING}>
           <LoadingSpinner />
         </When>
         <When value={step !== Steps.LOADING}>
           <When value={step === Steps.PHONE}>
-            <PhoneStep onValidPhone={handleValidPhone} disabled={isLoading}>
-              <LegalLanguage />
-            </PhoneStep>
+            <PhoneStep onValidPhone={handleValidPhone} disabled={isLoading} />
+            <LegalLanguage />
+            <TestPhoneNumbersBanner />
           </When>
           <When value={step === Steps.SUCCESS}>
             <SuccessfulSignUpStep onSignOut={reset} />
@@ -168,7 +157,6 @@ function OneClickHosted() {
         <When value={step === Steps.REDIRECT}>
           <RedirectStep />
         </When>
-        <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
       </Container>
     </>
   );

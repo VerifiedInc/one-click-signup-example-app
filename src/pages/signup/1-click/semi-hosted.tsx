@@ -5,28 +5,34 @@ import { PageHeader } from '@/components/UI/PageHeader';
 
 import { requestSendSms } from '@/services/client/otp-request-service';
 
-import DobStep from '@/components/register/DobFormStep';
-import OtpStep from '@/components/register/OtpStep';
-import PhoneStep from '@/components/register/PhoneStep';
-import SignupOneClickFormStep from '@/components/register/SignupOneClickFormStep';
-import { SignupOneClickForm } from '@/components/register/SignupOneClickFormStep/signup-one-click.schema';
-import SuccessfulSignUpStep from '@/components/register/SuccessfulSignUpStep';
-import LegalLanguage from '@/components/UI/LegalLanguage';
-import Snackbar, { useSnackbar } from '@/components/UI/Snackbar';
+import DobStep from '@/components/signup/DobFormStep';
+import LegalLanguage from '@/components/signup/LegalLanguage';
+import OtpStep from '@/components/signup/OtpStep';
+import PhoneStep from '@/components/signup/PhoneStep';
+import SignupOneClickFormStep from '@/components/signup/SignupOneClickFormStep';
+import { SignupOneClickForm } from '@/components/signup/SignupOneClickFormStep/signup-one-click.schema';
+import SuccessfulSignUpStep from '@/components/signup/SuccessfulSignUpStep';
 import {
   getOneClick,
   patchOneClick,
   postOneClick,
 } from '@/services/client/one-click-request-service';
 import {
+  IntegrationType,
   OneClickCredentials,
   OneClickErrorEnum,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
+import { showClipboardSnackbar } from '@/utils/snackbar';
 import { Container } from '@mui/material';
-import { When } from '@verifiedinc-public/shared-ui-elements';
+import {
+  TestPhoneNumbersBanner,
+  useSnackbar,
+  When,
+} from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { getHeaderDescription } from '@/utils/1-click';
 
 // Has all the steps for the registration process
 // The components will be rendered according the step state
@@ -55,7 +61,7 @@ function OneClickSemiHosted() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Snackbar hook to manage snackbar messages
-  const { disclosure, snackbarOptions, updateSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -66,29 +72,21 @@ function OneClickSemiHosted() {
     setIsLoading(true);
     setPhone(phone);
 
-    const response: OneClickPostResponse = await postOneClick({ phone });
+    const response: OneClickPostResponse = await postOneClick(
+      IntegrationType['Semi-Hosted'],
+      { phone },
+    );
     if ('uuid' in response) {
       const otp = response?.code as string;
-      updateSnackbar({
-        message: `OTP code: ${otp}`,
-        severity: 'info',
-        position: 'right',
-        onCopyClick: () => {
-          navigator.clipboard.writeText(otp);
-          updateSnackbar({ message: 'OTP code copied to clipboard' });
-        },
-      });
+      showClipboardSnackbar(otp, enqueueSnackbar, closeSnackbar);
       setOtp(response.code);
       setOneClickPostUuid(response.uuid);
       setStep(Steps.OTP);
     } else {
-      updateSnackbar({
-        message:
-          'data' in response
-            ? response.message
-            : 'An unexpected error happened',
-        severity: 'error',
-      });
+      enqueueSnackbar(
+        'data' in response ? response.message : 'An unexpected error happened',
+        'error',
+      );
     }
 
     setIsLoading(false);
@@ -117,13 +115,10 @@ function OneClickSemiHosted() {
     ) {
       setStep(Steps.DOB);
     } else {
-      updateSnackbar({
-        message:
-          'data' in response
-            ? response.message
-            : 'An unexpected error happened',
-        severity: 'error',
-      });
+      enqueueSnackbar(
+        'data' in response ? response.message : 'An unexpected error happened',
+        'error',
+      );
     }
     setIsLoading(false);
   };
@@ -143,13 +138,10 @@ function OneClickSemiHosted() {
       console.log(response?.credentials);
       setStep(Steps.FORM);
     } else {
-      updateSnackbar({
-        message:
-          'data' in response
-            ? response.message
-            : 'An unexpected error happened',
-        severity: 'error',
-      });
+      enqueueSnackbar(
+        'data' in response ? response.message : 'An unexpected error happened',
+        'error',
+      );
     }
 
     setIsLoading(false);
@@ -172,16 +164,12 @@ function OneClickSemiHosted() {
   const resendSms = async (phone: string) => {
     const response = await requestSendSms({ phone, otp: otp as string });
     if (response.error) {
-      updateSnackbar({
-        message: response.error,
-        severity: 'error',
-      });
+      enqueueSnackbar(response.error, 'error');
       return;
     }
 
-    updateSnackbar({
-      message: 'SMS sent successfully',
-    });
+    showClipboardSnackbar(otp as string, enqueueSnackbar, closeSnackbar);
+    enqueueSnackbar('SMS sent successfully');
     setStep(Steps.OTP);
   };
 
@@ -192,16 +180,17 @@ function OneClickSemiHosted() {
 
   return (
     <>
-      <Head page='Register' />
+      <Head page='Signup' />
       <PageHeader
-        title='1-click Semi-Hosted Register'
-        description="It's Slooow, but not slow"
+        title='1-Click Signup'
+        subtitle='(Semi-Hosted)'
+        description={getHeaderDescription(step, Steps.SUCCESS)}
       />
-      <Container maxWidth='xs' sx={{ py: 3 }}>
+      <Container maxWidth='xs'>
         <When value={step === Steps.PHONE}>
-          <PhoneStep onValidPhone={handleValidPhone} disabled={isLoading}>
-            <LegalLanguage />
-          </PhoneStep>
+          <PhoneStep onValidPhone={handleValidPhone} disabled={isLoading} />
+          <LegalLanguage />
+          <TestPhoneNumbersBanner />
         </When>
 
         <When value={step === Steps.OTP}>
@@ -228,7 +217,6 @@ function OneClickSemiHosted() {
           <SuccessfulSignUpStep onSignOut={reset} />
         </When>
       </Container>
-      <Snackbar disclosure={disclosure} snackbarOptions={snackbarOptions} />
     </>
   );
 }

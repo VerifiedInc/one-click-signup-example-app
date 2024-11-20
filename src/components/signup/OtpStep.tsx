@@ -1,10 +1,11 @@
-import { Box } from '@mui/material';
+import { Stack } from '@mui/material';
 import {
   OTPInput,
   OTPInputInstance,
+  ResendPhoneBanner,
 } from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { ResendPhoneBanner } from './ResendPhoneBanner';
+import Title from '../UI/Title';
 
 interface OtpStepProps {
   phone: string;
@@ -50,16 +51,15 @@ export default function OtpStep({
   useEffect(updateDisableStateAndClearOtp, [isLoading]);
 
   return (
-    <Box>
-      <Box sx={{ mb: 3 }}>
-        <OTPInput
-          disabled={!!isDisabled}
-          ref={oneClickSignupSubmitInputRef}
-          onChange={(event: any) => {
-            handleValidateOtp(event.target.value);
-          }}
-        />
-      </Box>
+    <Stack spacing={3}>
+      <Title>Enter your verification code:</Title>
+      <OTPInput
+        disabled={!!isDisabled}
+        ref={oneClickSignupSubmitInputRef}
+        onChange={(event: any) => {
+          handleValidateOtp(event.target.value);
+        }}
+      />
 
       <ResendPhoneBanner
         phone={phone}
@@ -68,6 +68,6 @@ export default function OtpStep({
           onRetryResendOtp(phone);
         }}
       />
-    </Box>
+    </Stack>
   );
 }
