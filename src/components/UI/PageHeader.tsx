@@ -13,10 +13,10 @@ export function PageHeader({
   description,
 }: Readonly<PageHeaderProps>) {
   return (
-    <Stack sx={{ my: 6 }} alignItems='center' spacing={3}>
+    <Stack sx={{ my: 6 }} alignItems='center' spacing={3} pb={1}>
       <Image src={'/slooow.png'} alt={'logo'} width='110px' component='img' />
       <Box>
-        <Typography variant='h3' fontSize={48} fontWeight='800' pb={1}>
+        <Typography variant='h3' fontSize={48} fontWeight='800'>
           {title}
         </Typography>
         <When value={!!subtitle}>
