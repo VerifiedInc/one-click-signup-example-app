@@ -89,7 +89,14 @@ function Signup() {
   return (
     <>
       <Head page='Signup' />
-      <PageHeader title='Manual Signup' description='This will be slooow...' />
+      <PageHeader
+        title='Manual Signup'
+        description={
+          step === Steps.SUCCESS
+            ? 'Wasn’t that slooow?!'
+            : 'This will be slooow...'
+        }
+      />
       <Container maxWidth='xs'>
         {/* This 'When' component conditionally renders it's children  */}
         <When value={step === Steps.PHONE}>
