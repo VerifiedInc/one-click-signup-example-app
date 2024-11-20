@@ -27,7 +27,6 @@ export const postOneClick = async (
   flowIntegrationType: IntegrationType,
   payload: OneClickPostRequest,
 ): Promise<OneClickPostResponse> => {
-  console.log(payload, flowIntegrationType);
   return fetch('/api/1-click', {
     method: 'POST',
     body: JSON.stringify(payload),
