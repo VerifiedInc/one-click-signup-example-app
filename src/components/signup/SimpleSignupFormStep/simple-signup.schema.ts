@@ -1,5 +1,5 @@
 import {
-  birthDateSchemaWithPastOnlyValidation,
+  getDateSchemaWithPastValidation,
   fieldSchema,
   MaskedAndUnmaskedSSNSchema,
   stateSchema,
@@ -9,7 +9,7 @@ import * as z from 'zod';
 export const signupFormSchema = z.object({
   firstName: fieldSchema,
   lastName: fieldSchema,
-  dob: birthDateSchemaWithPastOnlyValidation,
+  dob: getDateSchemaWithPastValidation('Birthday must be in the past'),
   ssn: MaskedAndUnmaskedSSNSchema,
   addressLine1: fieldSchema,
   city: fieldSchema,
