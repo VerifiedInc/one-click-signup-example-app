@@ -14,6 +14,7 @@ import SimpleSignupFormStep from '@/components/signup/SimpleSignupFormStep';
 import { SimpleSignupForm } from '@/components/signup/SimpleSignupFormStep/simple-signup.schema';
 import SuccessfulSignUpStep from '@/components/signup/SuccessfulSignUpStep';
 
+import { useSteps } from '@/hooks/useSteps';
 import { showClipboardSnackbar } from '@/utils/snackbar';
 import { Container } from '@mui/material';
 import { useSnackbar, When } from '@verifiedinc-public/shared-ui-elements';
@@ -22,20 +23,16 @@ import { useState } from 'react';
 
 // Has all the steps for the registration process
 // The components will be rendered according the step state
-enum Steps {
-  PHONE = 1,
-  OTP = 2,
-  FORM = 3,
-  SUCCESS = 4,
-}
+
 function Signup() {
-  // First step is the phone number form
-  const [step, setStep] = useState(Steps.PHONE);
   const [isLoading, setIsLoading] = useState(false);
   const [phone, setPhone] = useState('');
 
   // Snackbar hook to manage snackbar messages
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+
+  // Custom hook to manage the steps of the application
+  const { Steps, step, setStep } = useSteps();
 
   const router = useRouter();
 

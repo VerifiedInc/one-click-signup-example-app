@@ -16,6 +16,7 @@ import SignupOneClickFormStep from '@/components/signup/SignupOneClickFormStep';
 import { SignupOneClickForm } from '@/components/signup/SignupOneClickFormStep/signup-one-click.schema';
 import SuccessfulSignUpStep from '@/components/signup/SuccessfulSignUpStep';
 
+import { useSteps } from '@/hooks/useSteps';
 import { postOneClick } from '@/services/client/one-click-request-service';
 import {
   IntegrationType,
@@ -23,30 +24,18 @@ import {
   OneClickErrorEnum,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
+import { getHeaderDescription } from '@/utils/1-click';
 import { showClipboardSnackbar } from '@/utils/snackbar';
 import { Container } from '@mui/material';
 import {
+  TestPhoneNumbersBanner,
   When,
   useSnackbar,
-  TestPhoneNumbersBanner,
 } from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { getHeaderDescription } from '@/utils/1-click';
-
-// Has all the steps for the registration process
-// The components will be rendered according the step state
-enum Steps {
-  PHONE = 1,
-  OTP = 2,
-  DOB = 3,
-  FORM = 4,
-  SUCCESS = 5,
-}
 
 function OneClickNonHosted() {
-  // First step is the phone number form
-  const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [credentials, setCredentials] = useState<OneClickCredentials | null>(
@@ -55,6 +44,9 @@ function OneClickNonHosted() {
 
   // Snackbar hook to manage snackbar messages
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  // Custom hook to manage the steps of the application
+  const { Steps, step, setStep } = useSteps();
 
   const router = useRouter();
 
@@ -133,7 +125,7 @@ function OneClickNonHosted() {
 
   const handleFormSubmit = (data: SignupOneClickForm) => {
     console.log(data);
-    setStep(5);
+    setStep(Steps.SUCCESS);
   };
 
   // Function to generate the otp code and send the sms
