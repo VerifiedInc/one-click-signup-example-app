@@ -10,7 +10,7 @@ import {
 } from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { OneClickCredentials } from '@/types/OneClick.types';
+import { AddressCredential, OneClickCredentials } from '@/types/OneClick.types';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { Controller, useForm } from 'react-hook-form';
@@ -37,10 +37,13 @@ export default function SignupOneClickFormStep({
     handleSubmit,
     control,
     formState: { errors },
+    getValues,
     setValue,
   } = useForm<SignupOneClickForm>({
     resolver: zodResolver(signupOneClickFormSchema),
   });
+
+  const [addresses, setAddresses] = useState<AddressCredential[]>([]);
   // This state will hold the index of the selected address
   const [selectedAddress, setSelectedAddress] = useState<AddressOption | null>(
     null,
@@ -55,25 +58,50 @@ export default function SignupOneClickFormStep({
 
   const addressesOptions = useMemo(() => {
     let options: { id: string; label: string }[] = [];
-    if (credentials?.address) {
-      options = credentials.address?.map((address, index) => ({
-        id: `${index}`,
-        label: `${address.line1}, ${address.city}, ${address.state}, ${address.zipCode}`,
-      }));
-    }
+
+    options = addresses.map((address, index) => ({
+      id: `${index}`,
+      label: [address.line1, address.city, address.state, address.zipCode]
+        .filter(Boolean) // Remove undefined or falsy values
+        .join(', '),
+    }));
+
     options.push({
       id: '-1',
       label: '+ Add New Address',
     });
 
     return options;
-  }, []);
+  }, [addresses]);
+
+  // Fill the default value of the Birthday field
+  // This is one way of handling uncontrolled components with react hook form
+  useEffect(() => {
+    if (credentials?.birthDate) {
+      setValue('dob', new Date(formatDateMMDDYYYY(credentials.birthDate)));
+    }
+
+    if (credentials?.address) {
+      updateAddresses();
+    }
+  }, [credentials?.birthDate, credentials?.address]);
 
   useEffect(() => {
     if (addressesOptions.length > 0) {
       handleSelectAddressOption(addressesOptions[0]);
     }
   }, [addressesOptions]);
+
+  const updateAddresses = () => {
+    let addresses: AddressCredential[] = [];
+    if (credentials && Array.isArray(credentials.address)) {
+      addresses = credentials.address;
+    } else if (credentials?.address) {
+      addresses = [credentials.address as AddressCredential];
+    }
+
+    setAddresses(addresses);
+  };
 
   // Function to handle the selected address input
   // It will set the selected address index and fill the form fields with the address data
@@ -87,7 +115,7 @@ export default function SignupOneClickFormStep({
 
     // Get the address data from the credentials or create an empty object
     const addressCredentials =
-      !isNewAddress && !!option ? credentials?.address?.[+option.id] : {};
+      !isNewAddress && !!option ? addresses[+option.id] : {};
 
     // Update the form fields with the address data
     updateAddressFields(addressCredentials);
@@ -118,14 +146,6 @@ export default function SignupOneClickFormStep({
       size: 'small' as 'small',
     };
   };
-
-  // Fill the default value of the Birthday field
-  // This is one way of handling uncontrolled components with react hook form
-  useEffect(() => {
-    if (credentials?.birthDate) {
-      setValue('dob', new Date(formatDateMMDDYYYY(credentials.birthDate)));
-    }
-  }, [credentials?.birthDate]);
 
   // If the user doesn't select an address and tries to submit the form
   // It will show an error message bellow the address select input
@@ -205,29 +225,12 @@ export default function SignupOneClickFormStep({
               <TextField
                 label='Address Line 1'
                 {...getCommonFormProps('addressLine1')}
-                disabled={!isAddingNewAddress}
               />
 
-              <TextField
-                label='City'
-                {...getCommonFormProps('city')}
-                disabled={!isAddingNewAddress}
-              />
-              <TextField
-                label='State'
-                {...getCommonFormProps('state')}
-                disabled={!isAddingNewAddress}
-              />
-              <TextField
-                label='ZIP Code'
-                {...getCommonFormProps('zip')}
-                disabled={!isAddingNewAddress}
-              />
-              <TextField
-                label='Country'
-                {...getCommonFormProps('country')}
-                disabled={!isAddingNewAddress}
-              />
+              <TextField label='City' {...getCommonFormProps('city')} />
+              <TextField label='State' {...getCommonFormProps('state')} />
+              <TextField label='ZIP Code' {...getCommonFormProps('zip')} />
+              <TextField label='Country' {...getCommonFormProps('country')} />
             </When>
 
             <Button type='submit' variant='contained' size='large'>
