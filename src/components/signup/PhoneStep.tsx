@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { PhoneInput } from '@verifiedinc-public/shared-ui-elements';
+import { Backdrop, PhoneInput } from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode } from 'react';
 import Title from '../UI/Title';
 
@@ -13,9 +13,12 @@ export default function PhoneStep({
   disabled,
 }: PhoneStepProps): ReactNode {
   return (
-    <Box>
-      <Title>Enter your phone number:</Title>
-      <PhoneInput onValidPhone={onValidPhone} InputProps={{ disabled }} />
-    </Box>
+    <>
+      <Backdrop open={!!disabled} />
+      <Box>
+        <Title>Enter your phone number:</Title>
+        <PhoneInput onValidPhone={onValidPhone} InputProps={{ disabled }} />
+      </Box>
+    </>
   );
 }
