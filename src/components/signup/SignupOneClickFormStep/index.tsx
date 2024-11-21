@@ -140,7 +140,6 @@ export default function SignupOneClickFormStep({
   };
 
   return (
-    // Show the form only if the addresses options are loaded
     <>
       <Backdrop open={!addressesOptions.length} />
       <When value={!!addressesOptions}>
