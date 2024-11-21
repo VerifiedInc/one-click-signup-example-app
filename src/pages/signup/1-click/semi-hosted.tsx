@@ -12,6 +12,7 @@ import PhoneStep from '@/components/signup/PhoneStep';
 import SignupOneClickFormStep from '@/components/signup/SignupOneClickFormStep';
 import { SignupOneClickForm } from '@/components/signup/SignupOneClickFormStep/signup-one-click.schema';
 import SuccessfulSignUpStep from '@/components/signup/SuccessfulSignUpStep';
+import { useSteps } from '@/hooks/useSteps';
 import {
   getOneClick,
   patchOneClick,
@@ -23,6 +24,10 @@ import {
   OneClickErrorEnum,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
+import {
+  checkHasAdditionalInformationError,
+  getHeaderDescription,
+} from '@/utils/1-click';
 import { showClipboardSnackbar } from '@/utils/snackbar';
 import { Container } from '@mui/material';
 import {
@@ -32,21 +37,8 @@ import {
 } from '@verifiedinc-public/shared-ui-elements';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { getHeaderDescription } from '@/utils/1-click';
-
-// Has all the steps for the registration process
-// The components will be rendered according the step state
-enum Steps {
-  PHONE = 1,
-  OTP = 2,
-  DOB = 3,
-  FORM = 4,
-  SUCCESS = 5,
-}
 
 function OneClickSemiHosted() {
-  // First step is the phone number form
-  const [step, setStep] = useState(Steps.PHONE);
   const [phone, setPhone] = useState('');
 
   // holds the uuid of the one click post request
@@ -62,6 +54,9 @@ function OneClickSemiHosted() {
 
   // Snackbar hook to manage snackbar messages
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  // Custom hook to manage the steps of the application
+  const { Steps, step, setStep } = useSteps();
 
   const router = useRouter();
 
@@ -108,11 +103,7 @@ function OneClickSemiHosted() {
       setStep(Steps.FORM);
 
       // If the response contains ADDITIONAL_INFORMATION_REQUIRED we need to ask for the dob
-    } else if (
-      'data' in response &&
-      response.data?.errorCode ===
-        OneClickErrorEnum.ADDITIONAL_INFORMATION_REQUIRED
-    ) {
+    } else if (checkHasAdditionalInformationError(response)) {
       setStep(Steps.DOB);
     } else {
       enqueueSnackbar(

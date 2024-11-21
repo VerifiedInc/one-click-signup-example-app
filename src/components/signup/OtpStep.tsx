@@ -1,8 +1,10 @@
 import { Stack } from '@mui/material';
 import {
+  Backdrop,
   OTPInput,
   OTPInputInstance,
   ResendPhoneBanner,
+  useSnackbar,
 } from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import Title from '../UI/Title';
@@ -23,7 +25,10 @@ export default function OtpStep({
 }: OtpStepProps): ReactNode {
   const oneClickSignupSubmitInputRef = useRef<OTPInputInstance | null>(null);
   const [isDisabled, setIsDisabled] = useState<boolean | null>(null);
+  const { closeSnackbar } = useSnackbar();
+
   const handleValidateOtp = async (otpCode: string) => {
+    closeSnackbar();
     onValidate(otpCode);
   };
 
@@ -51,23 +56,26 @@ export default function OtpStep({
   useEffect(updateDisableStateAndClearOtp, [isLoading]);
 
   return (
-    <Stack spacing={3}>
-      <Title>Enter your verification code:</Title>
-      <OTPInput
-        disabled={!!isDisabled}
-        ref={oneClickSignupSubmitInputRef}
-        onChange={(event: any) => {
-          handleValidateOtp(event.target.value);
-        }}
-      />
+    <>
+      <Backdrop open={!!isLoading || !!isDisabled} />
+      <Stack spacing={3}>
+        <Title>Enter your verification code:</Title>
+        <OTPInput
+          disabled={!!isDisabled}
+          ref={oneClickSignupSubmitInputRef}
+          onChange={(event: any) => {
+            handleValidateOtp(event.target.value);
+          }}
+        />
 
-      <ResendPhoneBanner
-        phone={phone}
-        disabled={!!isDisabled}
-        onClick={() => {
-          onRetryResendOtp(phone);
-        }}
-      />
-    </Stack>
+        <ResendPhoneBanner
+          phone={phone}
+          disabled={!!isDisabled}
+          onClick={() => {
+            onRetryResendOtp(phone);
+          }}
+        />
+      </Stack>
+    </>
   );
 }

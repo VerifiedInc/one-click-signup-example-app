@@ -12,7 +12,7 @@ import {
   OneClickPostRequest,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
-import { flow } from 'lodash';
+import { checkHasAdditionalInformationError } from '@/utils/1-click';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -47,25 +47,29 @@ const checkIntegrationMismatch = (
   response: OneClickPostResponse,
 ): OneClickPostResponse => {
   console.log(response);
-  // if the response is an error, we don't need to check the integration type
-  if ('data' in response || 'className' in response) {
-    return response;
-  }
+
+  const hasAdditionalInformationError =
+    checkHasAdditionalInformationError(response);
 
   let responseIntegrationType: IntegrationType | null = null;
   if ('url' in response) {
     responseIntegrationType = IntegrationType['Hosted'];
+
+    // If additional information is coming from the POST response, it's a Non-Hosted flow
+  } else if ('identity' in response || hasAdditionalInformationError) {
+    responseIntegrationType = IntegrationType['Non-Hosted'];
   } else if ('code' in response) {
     responseIntegrationType = IntegrationType['Semi-Hosted'];
-  } else if ('identity' in response) {
-    responseIntegrationType = IntegrationType['Non-Hosted'];
   }
 
-  if (
-    // At this point, we know that responseIntegrationType is not null, but if were to be null, we would want to return the response
-    responseIntegrationType !== null &&
-    responseIntegrationType !== flowIntegrationType
-  ) {
+  const isError = 'data' in response || 'className' in response;
+
+  // if the response is an error and the responseIntegrationType couldn't be determined, return the response
+  if (!responseIntegrationType && isError) {
+    return response;
+  }
+
+  if (responseIntegrationType !== flowIntegrationType) {
     return {
       name: 'IntegrationTypeMismatch',
       message: `You are using the ${flowIntegrationType} flow in this app, but your brand's integration type is set to ${responseIntegrationType} Please update this setting to ${flowIntegrationType} in the Dashboard.`,
