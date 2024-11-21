@@ -24,7 +24,10 @@ import {
   OneClickErrorEnum,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
-import { getHeaderDescription } from '@/utils/1-click';
+import {
+  checkHasAdditionalInformationError,
+  getHeaderDescription,
+} from '@/utils/1-click';
 import { showClipboardSnackbar } from '@/utils/snackbar';
 import { Container } from '@mui/material';
 import {
@@ -100,11 +103,7 @@ function OneClickSemiHosted() {
       setStep(Steps.FORM);
 
       // If the response contains ADDITIONAL_INFORMATION_REQUIRED we need to ask for the dob
-    } else if (
-      'data' in response &&
-      response.data?.errorCode ===
-        OneClickErrorEnum.ADDITIONAL_INFORMATION_REQUIRED
-    ) {
+    } else if (checkHasAdditionalInformationError(response)) {
       setStep(Steps.DOB);
     } else {
       enqueueSnackbar(

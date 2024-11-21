@@ -24,7 +24,10 @@ import {
   OneClickErrorEnum,
   OneClickPostResponse,
 } from '@/types/OneClick.types';
-import { getHeaderDescription } from '@/utils/1-click';
+import {
+  checkHasAdditionalInformationError,
+  getHeaderDescription,
+} from '@/utils/1-click';
 import { showClipboardSnackbar } from '@/utils/snackbar';
 import { Container } from '@mui/material';
 import {
@@ -58,6 +61,25 @@ function OneClickNonHosted() {
     setIsLoading(false);
   };
 
+  // Function to generate the otp code and send the sms
+  const generateOtp = async (phone: string) => {
+    const response = await requestGenerateOtpAndSendSms({ phone });
+    if (response.error) {
+      enqueueSnackbar(response.error, 'error');
+      return;
+    }
+
+    const otp = response?.otp || '111111';
+    showClipboardSnackbar(otp, enqueueSnackbar, closeSnackbar);
+
+    setStep(Steps.OTP);
+  };
+
+  const handleRetryResendOtp = (phone: string) => {
+    enqueueSnackbar('SMS sent successfully');
+    generateOtp(phone);
+  };
+
   // Called when the user finishes typing the otp code
   // Will validate the otp code
   // If the otp code is valid, it will call the postOneClick and set the credentials
@@ -81,11 +103,7 @@ function OneClickNonHosted() {
       setStep(Steps.FORM);
 
       // If the response has the errorCode ADDITIONAL_INFORMATION_REQUIRED it means that we need to ask for the DOB
-    } else if (
-      'data' in response &&
-      response.data?.errorCode ===
-        OneClickErrorEnum.ADDITIONAL_INFORMATION_REQUIRED
-    ) {
+    } else if (checkHasAdditionalInformationError(response)) {
       setStep(Steps.DOB);
     } else {
       enqueueSnackbar(
@@ -118,28 +136,9 @@ function OneClickNonHosted() {
     setIsLoading(false);
   };
 
-  const handleRetryResendOtp = (phone: string) => {
-    enqueueSnackbar('SMS sent successfully');
-    generateOtp(phone);
-  };
-
   const handleFormSubmit = (data: SignupOneClickForm) => {
     console.log(data);
     setStep(Steps.SUCCESS);
-  };
-
-  // Function to generate the otp code and send the sms
-  const generateOtp = async (phone: string) => {
-    const response = await requestGenerateOtpAndSendSms({ phone });
-    if (response.error) {
-      enqueueSnackbar(response.error, 'error');
-      return;
-    }
-
-    const otp = response?.otp || '111111';
-    showClipboardSnackbar(otp, enqueueSnackbar, closeSnackbar);
-
-    setStep(Steps.OTP);
   };
 
   const reset = () => {
