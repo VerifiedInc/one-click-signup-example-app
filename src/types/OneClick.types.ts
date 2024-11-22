@@ -4,19 +4,21 @@ export enum IntegrationType {
   'Non-Hosted' = 'Non-Hosted',
 }
 
+export type AddressCredential = {
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+};
+
 export type OneClickCredentials = {
   fullName?: {
     firstName: string;
     lastName: string;
   };
-  address?: {
-    line1: string;
-    line2?: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
-  }[];
+  address?: AddressCredential | AddressCredential[];
   birthDate?: string;
   phone?: string;
   ssn?: string;

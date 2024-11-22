@@ -46,7 +46,7 @@ const checkIntegrationMismatch = (
   flowIntegrationType: IntegrationType,
   response: OneClickPostResponse,
 ): OneClickPostResponse => {
-  console.log(response);
+  console.log('One Click Post Response', response);
 
   const hasAdditionalInformationError =
     checkHasAdditionalInformationError(response);
@@ -58,18 +58,18 @@ const checkIntegrationMismatch = (
     // If additional information is coming from the POST response, it's a Non-Hosted flow
   } else if ('identity' in response || hasAdditionalInformationError) {
     responseIntegrationType = IntegrationType['Non-Hosted'];
-  } else if ('code' in response) {
+
+    // It's important to check for both uuid and code. Because error messages also have code.
+  } else if ('code' in response && 'uuid' in response) {
     responseIntegrationType = IntegrationType['Semi-Hosted'];
   }
 
-  const isError = 'data' in response || 'className' in response;
-
-  // if the response is an error and the responseIntegrationType couldn't be determined, return the response
-  if (!responseIntegrationType && isError) {
-    return response;
-  }
-
-  if (responseIntegrationType !== flowIntegrationType) {
+  // If responseIntegrationType is still null, it indicates an error (other than ADDITIONAL_INFORMATION_REQUIRED,
+  // which was already handled during the non-hosted check). In this case, we simply return the response.
+  if (
+    responseIntegrationType &&
+    responseIntegrationType !== flowIntegrationType
+  ) {
     return {
       name: 'IntegrationTypeMismatch',
       message: `You are using the ${flowIntegrationType} flow in this app, but your brand's integration type is set to ${responseIntegrationType} Please update this setting to ${flowIntegrationType} in the Dashboard.`,

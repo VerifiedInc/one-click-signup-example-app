@@ -1,6 +1,5 @@
 import { Stack } from '@mui/material';
 import {
-  Backdrop,
   OTPInput,
   OTPInputInstance,
   ResendPhoneBanner,
@@ -56,26 +55,23 @@ export default function OtpStep({
   useEffect(updateDisableStateAndClearOtp, [isLoading]);
 
   return (
-    <>
-      <Backdrop open={!!isLoading || !!isDisabled} />
-      <Stack spacing={3}>
-        <Title>Enter your verification code:</Title>
-        <OTPInput
-          disabled={!!isDisabled}
-          ref={oneClickSignupSubmitInputRef}
-          onChange={(event: any) => {
-            handleValidateOtp(event.target.value);
-          }}
-        />
+    <Stack spacing={3}>
+      <Title>Enter your verification code:</Title>
+      <OTPInput
+        disabled={!!isDisabled}
+        ref={oneClickSignupSubmitInputRef}
+        onChange={(event: any) => {
+          handleValidateOtp(event.target.value);
+        }}
+      />
 
-        <ResendPhoneBanner
-          phone={phone}
-          disabled={!!isDisabled}
-          onClick={() => {
-            onRetryResendOtp(phone);
-          }}
-        />
-      </Stack>
-    </>
+      <ResendPhoneBanner
+        phone={phone}
+        disabled={!!isDisabled}
+        onClick={() => {
+          onRetryResendOtp(phone);
+        }}
+      />
+    </Stack>
   );
 }
