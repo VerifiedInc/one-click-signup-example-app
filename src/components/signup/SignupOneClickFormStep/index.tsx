@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Stack, TextField } from '@mui/material';
 import {
-  Backdrop,
   Button,
   formatDateMMDDYYYY,
   SelectInput,
@@ -160,85 +159,82 @@ export default function SignupOneClickFormStep({
   };
 
   return (
-    <>
-      <Backdrop open={!addressesOptions.length} />
-      <When value={!!addressesOptions}>
-        <Box component='form' onSubmit={handleSubmit(onSubmit)} pb={4}>
-          <Stack spacing={1}>
-            <TextField
-              label='First Name'
-              {...getCommonFormProps('firstName')}
-              defaultValue={credentials?.fullName?.firstName}
-            />
+    <When value={!!addressesOptions.length}>
+      <Box component='form' onSubmit={handleSubmit(onSubmit)} pb={4}>
+        <Stack spacing={1}>
+          <TextField
+            label='First Name'
+            {...getCommonFormProps('firstName')}
+            defaultValue={credentials?.fullName?.firstName}
+          />
 
-            <TextField
-              label='Last Name'
-              {...getCommonFormProps('lastName')}
-              defaultValue={credentials?.fullName?.lastName}
-            />
+          <TextField
+            label='Last Name'
+            {...getCommonFormProps('lastName')}
+            defaultValue={credentials?.fullName?.lastName}
+          />
 
-            <DatePicker
-              label='Birthday'
-              slotProps={{
-                textField: {
-                  error: !!errors.dob,
-                  helperText: errors.dob?.message?.toString(),
-                  size: 'small',
-                },
-              }}
-              defaultValue={
-                credentials?.birthDate
-                  ? dayjs(formatDateMMDDYYYY(credentials?.birthDate))
-                  : null
-              }
-              onChange={(date) => {
-                if (date) setValue('dob', date.toDate());
-              }}
-            />
-            <Controller
-              control={control}
-              name='ssn'
-              defaultValue={credentials?.ssn}
-              render={({ field: { onChange, value } }) => (
-                <SSNInput
-                  onChange={onChange}
-                  value={value}
-                  label='Social Security Number'
-                  error={!!errors.ssn}
-                  helperText={errors.ssn?.message?.toString()}
-                />
-              )}
-            />
-
-            <SelectInput
-              InputProps={{
-                label: 'Select the address',
-                ...renderAddressSelectErrorMessage(),
-              }}
-              value={selectedAddress}
-              disableClearable={true}
-              options={addressesOptions}
-              onChange={handleSelectAddressOption}
-            />
-
-            <When value={selectedAddress !== null}>
-              <TextField
-                label='Address Line 1'
-                {...getCommonFormProps('addressLine1')}
+          <DatePicker
+            label='Birthday'
+            slotProps={{
+              textField: {
+                error: !!errors.dob,
+                helperText: errors.dob?.message?.toString(),
+                size: 'small',
+              },
+            }}
+            defaultValue={
+              credentials?.birthDate
+                ? dayjs(formatDateMMDDYYYY(credentials?.birthDate))
+                : null
+            }
+            onChange={(date) => {
+              if (date) setValue('dob', date.toDate());
+            }}
+          />
+          <Controller
+            control={control}
+            name='ssn'
+            defaultValue={credentials?.ssn}
+            render={({ field: { onChange, value } }) => (
+              <SSNInput
+                onChange={onChange}
+                value={value}
+                label='Social Security Number'
+                error={!!errors.ssn}
+                helperText={errors.ssn?.message?.toString()}
               />
+            )}
+          />
 
-              <TextField label='City' {...getCommonFormProps('city')} />
-              <TextField label='State' {...getCommonFormProps('state')} />
-              <TextField label='ZIP Code' {...getCommonFormProps('zip')} />
-              <TextField label='Country' {...getCommonFormProps('country')} />
-            </When>
+          <SelectInput
+            InputProps={{
+              label: 'Select the address',
+              ...renderAddressSelectErrorMessage(),
+            }}
+            value={selectedAddress}
+            disableClearable={true}
+            options={addressesOptions}
+            onChange={handleSelectAddressOption}
+          />
 
-            <Button type='submit' variant='contained' size='large'>
-              Sign up
-            </Button>
-          </Stack>
-        </Box>
-      </When>
-    </>
+          <When value={selectedAddress !== null}>
+            <TextField
+              label='Address Line 1'
+              {...getCommonFormProps('addressLine1')}
+            />
+
+            <TextField label='City' {...getCommonFormProps('city')} />
+            <TextField label='State' {...getCommonFormProps('state')} />
+            <TextField label='ZIP Code' {...getCommonFormProps('zip')} />
+            <TextField label='Country' {...getCommonFormProps('country')} />
+          </When>
+
+          <Button type='submit' variant='contained' size='large'>
+            Sign up
+          </Button>
+        </Stack>
+      </Box>
+    </When>
   );
 }

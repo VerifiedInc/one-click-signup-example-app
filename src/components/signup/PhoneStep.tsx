@@ -1,5 +1,8 @@
 import { Box } from '@mui/material';
-import { Backdrop, PhoneInput } from '@verifiedinc-public/shared-ui-elements';
+import {
+  PhoneInput,
+  useSnackbar,
+} from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode } from 'react';
 import Title from '../UI/Title';
 
@@ -12,13 +15,17 @@ export default function PhoneStep({
   onValidPhone,
   disabled,
 }: PhoneStepProps): ReactNode {
+  const { closeSnackbar } = useSnackbar();
+
+  const handleValidPhone = (phone: string) => {
+    closeSnackbar();
+    onValidPhone(phone);
+  };
+
   return (
-    <>
-      <Backdrop open={!!disabled} />
-      <Box>
-        <Title>Enter your phone number:</Title>
-        <PhoneInput onValidPhone={onValidPhone} InputProps={{ disabled }} />
-      </Box>
-    </>
+    <Box>
+      <Title>Enter your phone number:</Title>
+      <PhoneInput onValidPhone={handleValidPhone} InputProps={{ disabled }} />
+    </Box>
   );
 }

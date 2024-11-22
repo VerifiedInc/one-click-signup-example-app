@@ -1,16 +1,14 @@
+import Title from '@/components/UI/Title';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Stack } from '@mui/material';
 import {
-  Backdrop,
   DateInput,
   ExactBirthdayBanner,
-  formatDateToTimestamp,
 } from '@verifiedinc-public/shared-ui-elements';
 import { ReactNode, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import LegalLanguage from '../LegalLanguage';
 import { DobForm, dobFormSchema } from './dob.schema';
-import Title from '@/components/UI/Title';
 
 interface DobFormStepProps {
   onValidDob: (dob: string) => void;
@@ -50,37 +48,34 @@ export default function DobFormStep({
   }
 
   return (
-    <>
-      <Backdrop open={shouldBeDisabled} />
-      <Stack spacing={3}>
-        <Box>
-          <Title sx={{ pb: 2 }}>Enter your Birthday:</Title>
-          <Box component='form' onSubmit={handleSubmit(onSubmit)}>
-            <Controller
-              control={control}
-              name='dob'
-              disabled={disabled}
-              render={({ field }) => (
-                <DateInput
-                  {...field}
-                  size='medium'
-                  label='MM/DD/YYYY'
-                  error={!!errors.dob}
-                  disabled={shouldBeDisabled}
-                  onChange={(value) => {
-                    field.onChange(value);
-                    checkShouldSubmit(value);
-                  }}
-                  helperText={errors.dob?.message?.toString()}
-                />
-              )}
-            />
-          </Box>
-
-          <LegalLanguage actionMessage='continuing' />
+    <Stack spacing={3}>
+      <Box>
+        <Title sx={{ pb: 2 }}>Enter your Birthday:</Title>
+        <Box component='form' onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+            control={control}
+            name='dob'
+            disabled={disabled}
+            render={({ field }) => (
+              <DateInput
+                {...field}
+                size='medium'
+                label='MM/DD/YYYY'
+                error={!!errors.dob}
+                disabled={shouldBeDisabled}
+                onChange={(value) => {
+                  field.onChange(value);
+                  checkShouldSubmit(value);
+                }}
+                helperText={errors.dob?.message?.toString()}
+              />
+            )}
+          />
         </Box>
-        <ExactBirthdayBanner />
-      </Stack>
-    </>
+
+        <LegalLanguage actionMessage='continuing' />
+      </Box>
+      <ExactBirthdayBanner />
+    </Stack>
   );
 }
