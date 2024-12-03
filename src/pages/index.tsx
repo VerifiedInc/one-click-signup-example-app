@@ -5,7 +5,7 @@ import { MainLayout } from '@/components/layouts/main-layout';
 function OneClickSignupExampleApp() {
   const router = useRouter();
 
-  router.push('/signup');
+  router.push('/signup/manual');
 
   return null;
 }

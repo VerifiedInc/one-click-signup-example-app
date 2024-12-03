@@ -94,8 +94,8 @@ function Menubar() {
         >
           <MenuItem
             label='Manual Signup'
-            path='/signup'
-            onClick={() => onMenuClick('/signup')}
+            path='/signup/manual'
+            onClick={() => onMenuClick('/signup/manual')}
           />
           <Box sx={{ py: 1 }}>
             <Divider />
