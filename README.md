@@ -69,7 +69,7 @@ In a real integration of 1-Click Signup that uses the Verified [Production](http
 > [!WARNING]  
 > This example app only displays verification codes on the page (and logs it in the browser console) for ease of development use. In a real integration, you should never handle verification codes (or any sensitive data) in this way.
 
-#### Non-Hosted ([/signup/1-click/non-hosted](http://localhost:3061/register/signup/1-click/non-hosted))
+#### Non-Hosted ([/signup/1-click/non-hosted](http://localhost:3061/signup/1-click/non-hosted))
 
 > [!IMPORTANT]
 > For this flow to work, your brand's **integration type** setting must be set to **Non-Hosted** in the [Dashboard](https://dashboard.verified.inc).
@@ -78,7 +78,7 @@ With the Non-Hosted integration type, you use your own UI, and you use your own 
 
 After the app has collected and verified a user's phone number, it calls the Verified API for 1-Click Signup. See the [Non-Hosted Integration Guide](https://docs.verified.inc/integration-guide?integrationType=non-hosted#integration) for details.
 
-#### Semi-Hosted ([/1-click-signup/semi-hosted](http://localhost:3061/register/signup/1-click/semi-hosted))
+#### Semi-Hosted ([/signup/1-click/semi-hosted](http://localhost:3061/signup/1-click/semi-hosted))
 
 > [!IMPORTANT]
 > For this flow to work, your brand's **integration type** setting must be set to **Semi-Hosted** in the [Dashboard](https://dashboard.verified.inc).
@@ -87,7 +87,7 @@ With the Semi-Hosted integration type, you use your own UI, but you use Verified
 
 After the app has collected a user's phone number, it calls the Verified API to start a 1-Click Signup flow. See the [Semi-Hosted Integration Guide](https://docs.verified.inc/integration-guide?integrationType=semi-hosted#integration) for details.
 
-#### Hosted ([/1-click-signup/hosted](http://localhost:3061/register/signup/1-click/hosted))
+#### Hosted ([/signup/1-click/hosted](http://localhost:3061/signup/1-click/hosted))
 
 > [!IMPORTANT]
 > For this flow to work, your brand's **integration type** setting must be set to **Hosted** in the [Dashboard](https://dashboard.verified.inc).
@@ -101,6 +101,6 @@ With the Hosted integration type, you use Verified's UI, and you use Verified's 
 
 After the app has collected a user's phone number, it calls the Verified API to start a 1-Click Signup flow and redirects the user to a Verified hosted page. See the [Hosted Integration Guide](https://docs.verified.inc/integration-guide?integrationType=hosted#integration) for details.
 
-Once the user completes 1-Click Signup on the Verified hosted page, that page redirects them to a URL defined by your brand's **default redirect URL** setting in the [Dashboard](https://dashboard.verified.inc). Using `http://localhost:3061` won’t work due to security restrictions, so you should use a tunneling service like [ngrok](https://ngrok.com/) or [Localtunnel](https://theboroer.github.io/localtunnel-www/) to create a secure, publicly accessible URL.
+Once the user completes 1-Click Signup on the Verified hosted page, that page redirects them to a URL defined by your brand's **default redirect URL** setting in the [Dashboard](https://dashboard.verified.inc). Using `http://localhost:3061` won’t work due to security restrictions, so you should use a tunneling service like [ngrok](https://ngrok.com/) or [Localtunnel](https://theboroer.github.io/localtunnel-www/) to create a publicly accessible URL.
 
 For example, with Localtunnel, you can install it globally (`npm install -g localtunnel`) and run it (`lt --port 3061`), and it will generate a URL. Set this URL as the default redirect URL for your brand in the Dashboard, and save your brand's settings.
