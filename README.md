@@ -78,7 +78,7 @@ With the Non-Hosted integration type, you use your own UI, and you use your own 
 
 After the app has collected and verified a user's phone number, it calls the Verified API for 1-Click Signup. See the [Non-Hosted Integration Guide](https://docs.verified.inc/integration-guide?integrationType=non-hosted#integration) for details.
 
-#### Semi-Hosted ([/1-click-signup/semi-hosted](http://localhost:3061/signup/1-click/semi-hosted))
+#### Semi-Hosted ([/signup/1-click/semi-hosted](http://localhost:3061/signup/1-click/semi-hosted))
 
 > [!IMPORTANT]
 > For this flow to work, your brand's **integration type** setting must be set to **Semi-Hosted** in the [Dashboard](https://dashboard.verified.inc).
@@ -87,7 +87,7 @@ With the Semi-Hosted integration type, you use your own UI, but you use Verified
 
 After the app has collected a user's phone number, it calls the Verified API to start a 1-Click Signup flow. See the [Semi-Hosted Integration Guide](https://docs.verified.inc/integration-guide?integrationType=semi-hosted#integration) for details.
 
-#### Hosted ([/1-click-signup/hosted](http://localhost:3061/signup/1-click/hosted))
+#### Hosted ([/signup/1-click/hosted](http://localhost:3061/signup/1-click/hosted))
 
 > [!IMPORTANT]
 > For this flow to work, your brand's **integration type** setting must be set to **Hosted** in the [Dashboard](https://dashboard.verified.inc).
